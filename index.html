@@ -1,0 +1,2431 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Filament Ekstruder — Media Pembelajaran & Dokumentasi Alat</title>
+  <meta name="description" content="Portal dokumentasi teknis, inspeksi 3D interaktif dengan petunjuk panah, buku panduan flipbook, labsheet praktikum, dan video demonstrasi alat Filament Ekstruder. Program Studi Pendidikan Teknik Mekatronika, Universitas Negeri Yogyakarta." />
+  <link rel="icon" href="assets/logo-uny.png" type="image/png" />
+
+  <!-- Preload 3D Model -->
+  <link rel="preload" href="models/alat.glb" as="fetch" crossorigin="anonymous" />
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Google Model Viewer -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+
+  <style>
+    /* =====================================================================
+       DESIGN SYSTEM: Atelier Mekatronika & Laboratorium Presisi
+       Palet Warna Soft & Timeless, Human-Crafted, Ramah Pembaca
+       ===================================================================== */
+    :root {
+      /* Background Canvas */
+      --canvas: #F8F9FB;
+      --canvas-subtle: #F1F4F8;
+      --canvas-tint: #EBF0F6;
+      
+      /* Surface & Cards */
+      --surface: #FFFFFF;
+      --surface-subtle: #F7F9FC;
+      --surface-hover: #F0F4F9;
+      --surface-active: #E8EEF6;
+      
+      /* Text Scale */
+      --text-primary: #151D28;
+      --text-secondary: #455264;
+      --text-muted: #647387;
+      --text-faint: #8E9BAE;
+      
+      /* Borders & Lines */
+      --border-subtle: #E5EAF1;
+      --border-medium: #D1D9E4;
+      --border-strong: #9CAEC4;
+      
+      /* Primary Brand Accent (Refined UNY Soft Cobalt) */
+      --accent-primary: #234E78;
+      --accent-primary-hover: #193B5D;
+      --accent-primary-wash: #EBF3FA;
+      --accent-primary-border: #BED6EC;
+      
+      /* Warm Engineering Accent (Soft Terracotta / Amber) */
+      --accent-warm: #BD643C;
+      --accent-warm-hover: #9E502E;
+      --accent-warm-wash: #FAF1EC;
+      --accent-warm-border: #F0CEBF;
+      
+      /* Auxiliary Functional Accents */
+      --accent-green: #2B7855;
+      --accent-green-wash: #EDF7F1;
+      --accent-green-border: #BCE2CF;
+      
+      --accent-purple: #625088;
+      --accent-purple-wash: #F3EFF9;
+      --accent-purple-border: #DACFEA;
+
+      --accent-yellow: #B88224;
+      --accent-yellow-wash: #FDF7EA;
+      --accent-yellow-border: #F4DFB1;
+      
+      /* Layout & Geometry */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+      --max-width: 1180px;
+      
+      /* Typography */
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      
+      /* Elevation & Shadows */
+      --shadow-xs: 0 1px 2px rgba(18, 30, 49, 0.04);
+      --shadow-sm: 0 2px 6px rgba(18, 30, 49, 0.05);
+      --shadow-md: 0 6px 18px -3px rgba(18, 30, 49, 0.06), 0 2px 6px -1px rgba(18, 30, 49, 0.03);
+      --shadow-lg: 0 16px 36px -6px rgba(18, 30, 49, 0.08), 0 4px 12px -2px rgba(18, 30, 49, 0.03);
+    }
+
+    /* Reset & Base */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+    }
+    body {
+      margin: 0;
+      background-color: var(--canvas);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 15.5px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; }
+
+    .wrap {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+    @media (max-width: 640px) {
+      .wrap { padding: 0 18px; }
+    }
+
+    /* Background Architectural Grid */
+    .bg-grid {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: 
+        linear-gradient(to right, rgba(35, 78, 120, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(35, 78, 120, 0.035) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 90% 70% at 50% 10%, #000 20%, transparent 80%);
+    }
+
+    /* -------------------------------------------------------------
+       NAVBAR
+       ------------------------------------------------------------- */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(248, 249, 251, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      gap: 20px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      padding: 4px 0;
+    }
+    .brand-logo-frame {
+      width: 40px;
+      height: 40px;
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-xs);
+    }
+    .brand-logo-frame img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .brand-title {
+      font-weight: 750;
+      font-size: 16px;
+      letter-spacing: -0.015em;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.25;
+    }
+    .brand-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-family: var(--font-mono);
+      letter-spacing: -0.01em;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-link {
+      padding: 8px 14px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      transition: color 0.15s, background-color 0.15s;
+    }
+    .nav-link:hover {
+      color: var(--accent-primary);
+      background-color: var(--surface-hover);
+    }
+    .nav-link:focus-visible {
+      outline: 2px solid var(--accent-primary);
+      outline-offset: 2px;
+    }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 15px;
+      font-size: 13px;
+      font-weight: 650;
+      color: #FFFFFF;
+      background-color: var(--accent-primary);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-xs);
+      transition: background-color 0.15s, transform 0.15s;
+    }
+    .nav-cta:hover {
+      background-color: var(--accent-primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .menu-toggle {
+      display: none;
+      width: 42px;
+      height: 42px;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+    @media (max-width: 860px) {
+      .nav-menu, .nav-cta { display: none; }
+      .menu-toggle { display: flex; }
+    }
+
+    /* Mobile Drawer */
+    .mobile-drawer {
+      display: none;
+      border-top: 1px solid var(--border-subtle);
+      padding: 12px 0 20px;
+      background: var(--surface);
+    }
+    .mobile-drawer.is-open { display: block; }
+    .drawer-link {
+      display: block;
+      padding: 11px 12px;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      margin-bottom: 2px;
+    }
+    .drawer-link:hover {
+      background: var(--surface-subtle);
+      color: var(--accent-primary);
+    }
+
+    /* -------------------------------------------------------------
+       HERO
+       ------------------------------------------------------------- */
+    .hero {
+      position: relative;
+      padding: 56px 0 72px;
+      border-bottom: 1px solid var(--border-subtle);
+      overflow: hidden;
+    }
+    .hero-layout {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    @media (max-width: 980px) {
+      .hero-layout {
+        grid-template-columns: 1fr;
+        gap: 36px;
+      }
+    }
+
+    .hero-narrative {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .inst-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      padding: 5px 12px 5px 6px;
+      border-radius: 999px;
+      box-shadow: var(--shadow-xs);
+      margin-bottom: 22px;
+    }
+    .inst-badge-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--canvas-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .inst-badge-icon img {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+    }
+    .inst-badge-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: -0.01em;
+    }
+    .inst-badge-tag {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--accent-primary);
+      background: var(--accent-primary-wash);
+      padding: 2px 7px;
+      border-radius: 999px;
+    }
+
+    .hero-title {
+      font-size: clamp(34px, 4.4vw, 48px);
+      font-weight: 800;
+      line-height: 1.12;
+      letter-spacing: -0.035em;
+      color: var(--text-primary);
+      margin: 0 0 18px;
+    }
+    .hero-title span.highlight {
+      color: var(--accent-primary);
+      position: relative;
+      display: inline-block;
+    }
+    .hero-lead {
+      font-size: 16.5px;
+      line-height: 1.65;
+      color: var(--text-secondary);
+      margin: 0 0 28px;
+      max-width: 560px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 34px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 22px;
+      font-size: 14.5px;
+      font-weight: 650;
+      border-radius: var(--radius-md);
+      transition: transform 0.15s, background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .btn-primary {
+      background-color: var(--accent-primary);
+      color: #FFFFFF;
+      box-shadow: 0 4px 14px rgba(35, 78, 120, 0.18);
+    }
+    .btn-primary:hover {
+      background-color: var(--accent-primary-hover);
+      transform: translateY(-1.5px);
+      box-shadow: 0 6px 18px rgba(35, 78, 120, 0.24);
+    }
+    .btn-warm {
+      background-color: var(--accent-warm);
+      color: #FFFFFF;
+      box-shadow: 0 4px 14px rgba(189, 100, 60, 0.2);
+    }
+    .btn-warm:hover {
+      background-color: var(--accent-warm-hover);
+      transform: translateY(-1.5px);
+    }
+    .btn-outline {
+      background-color: #FFFFFF;
+      color: var(--text-primary);
+      border-color: var(--border-medium);
+      box-shadow: var(--shadow-xs);
+    }
+    .btn-outline:hover {
+      background-color: var(--surface-subtle);
+      border-color: var(--border-strong);
+      transform: translateY(-1.5px);
+    }
+
+    .specs-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      width: 100%;
+      max-width: 580px;
+      padding-top: 22px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    @media (max-width: 540px) {
+      .specs-strip { grid-template-columns: 1fr 1fr; }
+    }
+    .spec-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .spec-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+    }
+    .spec-value {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* Hero Showcase Card Right */
+    .hero-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .hero-card-title {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--accent-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pulse-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 0 3px var(--accent-green-wash);
+    }
+    .hero-card-tag {
+      font-size: 11.5px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+
+    .hero-preview-box {
+      background: radial-gradient(circle at 50% 50%, #FFFFFF 30%, var(--canvas-subtle) 100%);
+      border: 1px dashed var(--border-medium);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+      position: relative;
+    }
+    .hero-poster-img {
+      max-height: 200px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 16px rgba(18, 30, 49, 0.12));
+    }
+    .hero-shortcut-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+    .hero-jump-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+    }
+    .hero-jump-pill {
+      padding: 6px 11px;
+      font-size: 12px;
+      font-weight: 650;
+      border-radius: var(--radius-sm);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      transition: background-color 0.15s, color 0.15s, transform 0.15s;
+      cursor: pointer;
+    }
+    .hero-jump-pill:hover {
+      background: var(--accent-primary-wash);
+      color: var(--accent-primary);
+      border-color: var(--accent-primary-border);
+      transform: translateY(-1px);
+    }
+
+    /* -------------------------------------------------------------
+       SECTION HEADINGS
+       ------------------------------------------------------------- */
+    section {
+      padding: 82px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      position: relative;
+    }
+    @media (max-width: 640px) {
+      section { padding: 56px 0; }
+    }
+
+    .section-head {
+      margin-bottom: 34px;
+    }
+    .section-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 650;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-primary);
+      margin-bottom: 8px;
+    }
+    .section-meta::before {
+      content: "";
+      display: inline-block;
+      width: 14px;
+      height: 2px;
+      background: var(--accent-primary);
+      border-radius: 2px;
+    }
+    .section-title {
+      font-size: clamp(24px, 3.2vw, 32px);
+      font-weight: 750;
+      letter-spacing: -0.025em;
+      color: var(--text-primary);
+      margin: 0 0 10px;
+    }
+    .section-desc {
+      font-size: 15.5px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      max-width: 680px;
+      margin: 0;
+    }
+
+    /* -------------------------------------------------------------
+       STUDIO INSPEKSI 3D DENGAN ARROW PETUNJUK
+       ------------------------------------------------------------- */
+    .inspection-studio {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 28px;
+      align-items: stretch;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 960px) {
+      .inspection-studio {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Viewport Card */
+    .studio-viewport-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+    .studio-viewport-header {
+      padding: 14px 20px;
+      background: var(--surface-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .studio-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--accent-primary);
+      letter-spacing: 0.04em;
+    }
+    .studio-stage {
+      position: relative;
+      width: 100%;
+      height: 520px;
+      background: radial-gradient(circle at 50% 50%, #FFFFFF 35%, var(--canvas-subtle) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    @media (max-width: 640px) {
+      .studio-stage { height: 400px; }
+    }
+
+    .model-viewer-elem {
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+      --poster-color: transparent;
+      --progress-bar-color: var(--accent-primary);
+      --progress-mask: transparent;
+    }
+    .model-viewer-elem:active { cursor: grabbing; }
+
+    /* Hotspot Elements with Pointer Arrows */
+    .hotspot-pin {
+      background: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform: translate(-50%, -100%);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      outline: none;
+      user-select: none;
+    }
+    .hotspot-arrow-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 9px 4px 7px;
+      border-radius: 999px;
+      background: var(--accent-primary);
+      color: #FFFFFF;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(35, 78, 120, 0.35);
+      position: relative;
+      transition: background-color 0.2s, transform 0.2s;
+    }
+    .hotspot-arrow-box svg {
+      animation: arrowBounce 1.4s ease-in-out infinite;
+    }
+    @keyframes arrowBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(3px); }
+    }
+    .hotspot-arrow-stem {
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--accent-primary);
+      margin-top: -1px;
+      transition: border-top-color 0.2s;
+    }
+    .hotspot-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent-primary);
+      border: 2px solid #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(35, 78, 120, 0.25);
+      margin-top: 2px;
+      transition: background-color 0.2s, box-shadow 0.2s;
+    }
+
+    /* Active Hotspot Highlight */
+    .hotspot-pin.is-active .hotspot-arrow-box {
+      background: var(--accent-warm);
+      box-shadow: 0 6px 18px rgba(189, 100, 60, 0.45);
+      transform: scale(1.12);
+    }
+    .hotspot-pin.is-active .hotspot-arrow-stem {
+      border-top-color: var(--accent-warm);
+    }
+    .hotspot-pin.is-active .hotspot-dot {
+      background: var(--accent-warm);
+      box-shadow: 0 0 0 4px rgba(189, 100, 60, 0.35), 0 0 0 8px rgba(189, 100, 60, 0.15);
+    }
+
+    /* Tooltip */
+    .hotspot-callout {
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #FFFFFF;
+      border: 1px solid var(--border-medium);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-md);
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s, transform 0.2s;
+      font-size: 12px;
+      font-weight: 650;
+      color: var(--text-primary);
+      z-index: 10;
+    }
+    .hotspot-pin:hover .hotspot-callout, .hotspot-pin.is-active .hotspot-callout {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(-2px);
+    }
+
+    /* Fallback Video */
+    .model-fallback-vid {
+      width: 88%;
+      height: auto;
+      aspect-ratio: 420/484;
+      object-fit: contain;
+      cursor: pointer;
+    }
+
+    /* Viewport Toolbar */
+    .studio-toolbar {
+      padding: 12px 18px;
+      border-top: 1px solid var(--border-subtle);
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .studio-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .studio-buttons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .btn-tool {
+      padding: 6px 11px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background-color 0.15s, color 0.15s;
+    }
+    .btn-tool:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+
+    /* Right Inspection Detail Panel */
+    .studio-panel {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      padding: 24px 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .part-nav-pills {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .part-nav-btn {
+      padding: 7px 12px;
+      font-size: 12.5px;
+      font-weight: 650;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      background: var(--surface-subtle);
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .part-nav-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+    .part-nav-btn.is-active {
+      background: var(--accent-primary-wash);
+      border-color: var(--accent-primary-border);
+      color: var(--accent-primary);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .part-detail-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .part-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .part-code-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-xs);
+    }
+    .part-active-title {
+      font-size: 21px;
+      font-weight: 750;
+      color: var(--text-primary);
+      margin: 0 0 10px;
+      letter-spacing: -0.015em;
+    }
+    .part-active-desc {
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      margin: 0 0 18px;
+    }
+
+    .guide-notes-card {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      margin-bottom: 20px;
+    }
+    .guide-note-item {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .guide-note-item:last-child { margin-bottom: 0; }
+    .guide-note-item strong {
+      color: var(--text-primary);
+      font-weight: 650;
+      flex: none;
+    }
+    .guide-note-icon {
+      flex: none;
+      margin-top: 3px;
+    }
+
+    .studio-tour-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+    }
+    .tour-counter {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* -------------------------------------------------------------
+       DOCUMENT DESK (FLIPBOOK SUITE)
+       ------------------------------------------------------------- */
+    .desk-viewer {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+    .desk-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 14px 20px;
+      background: var(--surface-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .desk-doc-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      min-width: 0;
+    }
+    .desk-doc-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-primary);
+      background: var(--accent-primary-wash);
+      border: 1px solid var(--accent-primary-border);
+      padding: 3px 8px;
+      border-radius: var(--radius-xs);
+    }
+    .desk-doc-title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .desk-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      background: #FFFFFF;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .btn-action:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+      border-color: var(--border-medium);
+    }
+    .btn-action.btn-action-primary {
+      background: var(--accent-primary);
+      color: #FFFFFF;
+      border-color: var(--accent-primary);
+    }
+    .btn-action.btn-action-primary:hover {
+      background: var(--accent-primary-hover);
+    }
+
+    .desk-stage {
+      position: relative;
+      aspect-ratio: 16 / 10;
+      background: #1C232E;
+      width: 100%;
+    }
+    @media (max-width: 760px) {
+      .desk-stage { aspect-ratio: 4 / 3; }
+    }
+    @media (max-width: 520px) {
+      .desk-stage { aspect-ratio: 1 / 1.1; }
+    }
+    .desk-stage iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    .desk-loading {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 32px;
+      text-align: center;
+      color: #E2E8F0;
+      font-size: 14px;
+      background: #1C232E;
+      transition: opacity 0.4s ease, visibility 0.4s;
+    }
+    .desk-loading.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .desk-spinner {
+      width: 28px;
+      height: 28px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #63B3ED;
+      border-radius: 50%;
+      animation: deskSpin 0.8s linear infinite;
+    }
+    @keyframes deskSpin { to { transform: rotate(360deg); } }
+
+    .desk-viewer:fullscreen {
+      border-radius: 0;
+      border: 0;
+    }
+    .desk-viewer:fullscreen .desk-stage {
+      aspect-ratio: auto;
+      height: calc(100vh - 65px);
+    }
+
+    .supp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 860px) {
+      .supp-grid { grid-template-columns: 1fr; }
+    }
+    .supp-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 26px 28px;
+      box-shadow: var(--shadow-sm);
+    }
+    .supp-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      color: var(--text-primary);
+      margin: 0 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .supp-list {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--text-secondary);
+      font-size: 14.5px;
+    }
+    .supp-list li { margin: 8px 0; }
+    .supp-list li strong { color: var(--text-primary); font-weight: 600; }
+
+    /* -------------------------------------------------------------
+       LABSHEET TABS
+       ------------------------------------------------------------- */
+    .labsheet-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .lab-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      background: #FFFFFF;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 650;
+      cursor: pointer;
+      box-shadow: var(--shadow-xs);
+      transition: background-color 0.15s, border-color 0.15s, color 0.15s, transform 0.15s;
+    }
+    .lab-tab-btn:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-medium);
+      color: var(--text-primary);
+    }
+    .lab-tab-btn .tab-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: var(--radius-xs);
+    }
+    .lab-tab-btn[aria-selected="true"] {
+      background: var(--accent-primary-wash);
+      border-color: var(--accent-primary-border);
+      color: var(--accent-primary);
+      box-shadow: var(--shadow-sm);
+    }
+    .lab-tab-btn:focus-visible {
+      outline: 2px solid var(--accent-primary);
+      outline-offset: 2px;
+    }
+    @media (max-width: 540px) {
+      .labsheet-tabs { flex-direction: column; }
+      .lab-tab-btn { width: 100%; justify-content: flex-start; }
+    }
+
+    /* -------------------------------------------------------------
+       VIDEO DEMONSTRASI
+       ------------------------------------------------------------- */
+    .video-showcase {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    .video-viewport {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      background: #11161F;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 0;
+      padding: 0;
+      color: inherit;
+    }
+    .video-viewport video, .video-viewport iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+    .play-btn-circle {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s;
+    }
+    .play-btn-circle svg {
+      margin-left: 4px;
+      color: var(--accent-primary);
+    }
+    .video-viewport:hover .play-btn-circle {
+      transform: scale(1.1);
+      background: #FFFFFF;
+    }
+
+    .video-caption-bar {
+      padding: 22px 26px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .video-text h4 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      color: var(--text-primary);
+    }
+    .video-text p {
+      margin: 0;
+      font-size: 14.5px;
+      color: var(--text-secondary);
+      max-width: 620px;
+    }
+    .video-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .chip {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-subtle);
+      padding: 5px 10px;
+      border-radius: var(--radius-xs);
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal.is-open { display: flex; }
+    .modal-box {
+      width: min(940px, 100%);
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--surface-subtle);
+    }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0;
+      color: var(--text-primary);
+    }
+    .modal-close {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .modal-close:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+    .modal-player {
+      aspect-ratio: 16 / 9;
+      background: #000000;
+    }
+    .modal-player iframe, .modal-player video {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    /* -------------------------------------------------------------
+       FOOTER
+       ------------------------------------------------------------- */
+    .site-footer {
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-subtle);
+      padding: 56px 0 40px;
+    }
+    .footer-layout {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 36px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .footer-identity {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      max-width: 580px;
+    }
+    .footer-logo {
+      width: 48px;
+      height: 48px;
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 6px;
+    }
+    .footer-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .footer-text {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .footer-tool-name {
+      font-size: 16px;
+      font-weight: 750;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+    .footer-inst-hierarchy {
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+    }
+
+    .footer-meta-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .footer-author-tag {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+    }
+    .footer-author-tag strong {
+      color: var(--text-primary);
+      font-weight: 650;
+    }
+    .footer-univ-tag {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 12.5px;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-backtop {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-primary);
+      font-weight: 600;
+      font-size: 12.5px;
+      background: none;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+    }
+    .footer-backtop:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Grid Pattern -->
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <!-- NAVBAR -->
+  <header class="nav">
+    <div class="wrap">
+      <div class="nav-inner">
+        <a class="brand" href="#top" aria-label="Kembali ke atas">
+          <div class="brand-logo-frame">
+            <img src="assets/logo-uny.png" alt="Logo Universitas Negeri Yogyakarta" />
+          </div>
+          <div class="brand-text">
+            <span class="brand-title" id="brandName">Filament Ekstruder</span>
+            <span class="brand-sub">Laboratorium Mekatronika UNY</span>
+          </div>
+        </a>
+
+        <nav class="nav-menu" aria-label="Navigasi utama">
+          <a class="nav-link" href="#alat">Inspeksi 3D</a>
+          <a class="nav-link" href="#panduan">Buku Panduan</a>
+          <a class="nav-link" href="#jobsheet">Labsheet Praktikum</a>
+          <a class="nav-link" href="#video">Video Demonstrasi</a>
+        </nav>
+
+        <a class="nav-cta" href="#alat">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          Mulai Inspeksi 3D
+        </a>
+
+        <button class="menu-toggle" id="menuBtn" aria-label="Buka Menu" aria-expanded="false">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <!-- Mobile Drawer -->
+      <div class="mobile-drawer" id="mobileDrawer">
+        <a class="drawer-link" href="#alat">Inspeksi 3D & Komponen</a>
+        <a class="drawer-link" href="#panduan">Buku Panduan Penggunaan</a>
+        <a class="drawer-link" href="#jobsheet">Labsheet Praktikum</a>
+        <a class="drawer-link" href="#video">Video Demonstrasi</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <main>
+    <section class="hero" id="top">
+      <div class="wrap">
+        <div class="hero-layout">
+          
+          <!-- Narrative Left Column -->
+          <div class="hero-narrative">
+            <div class="inst-badge">
+              <div class="inst-badge-icon">
+                <img src="assets/logo-uny.png" alt="" />
+              </div>
+              <span class="inst-badge-text" id="heroInstLabel">Universitas Negeri Yogyakarta</span>
+              <span class="inst-badge-tag">Pendidikan Mekatronika</span>
+            </div>
+
+            <h1 class="hero-title" id="heroTitle">
+              Dokumentasi Lengkap <br />
+              <span class="highlight">Filament Ekstruder</span>
+            </h1>
+
+            <p class="hero-lead" id="heroSub">
+              Sistem media pembelajaran interaktif yang memadukan inspeksi 3D rancangan alat dengan petunjuk panah visual, buku panduan flipbook, pilihan labsheet praktikum mandiri, dan video demonstrasi laboratorium.
+            </p>
+
+            <div class="hero-actions">
+              <a class="btn btn-warm" href="#alat">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                Inspeksi 3D dengan Petunjuk
+              </a>
+              <a class="btn btn-outline" href="#panduan">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                Buku Panduan
+              </a>
+            </div>
+
+            <!-- Quick Specs Strip -->
+            <div class="specs-strip">
+              <div class="spec-item">
+                <span class="spec-label">Output Filamen</span>
+                <span class="spec-value">Ø 1.75 mm</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Kontrol Suhu</span>
+                <span class="spec-value">Dual PID Barrel</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Bahan Baku</span>
+                <span class="spec-value">Cacahan Plastik</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Overview Card Right -->
+          <div class="hero-visual">
+            <div class="hero-card">
+              <div class="hero-card-header">
+                <div class="hero-card-title">
+                  <span class="pulse-indicator" aria-hidden="true"></span>
+                  <span>STUDIO INSPEKSI MAHASISWA</span>
+                </div>
+                <span class="hero-card-tag">5 BAGIAN UTAMA</span>
+              </div>
+
+              <div class="hero-preview-box">
+                <img class="hero-poster-img" src="assets/animasi-poster.png" alt="Pratinjau Rancangan Filament Ekstruder" />
+              </div>
+
+              <div class="hero-shortcut-title">Pilih bagian untuk langsung mengarahkan kamera 3D:</div>
+              <div class="hero-jump-pills">
+                <button class="hero-jump-pill" type="button" onclick="focusPart(0)">01. Hopper</button>
+                <button class="hero-jump-pill" type="button" onclick="focusPart(1)">02. Nozzle Pemanas</button>
+                <button class="hero-jump-pill" type="button" onclick="focusPart(2)">03. Spooler</button>
+                <button class="hero-jump-pill" type="button" onclick="focusPart(3)">04. Panel LCD</button>
+                <button class="hero-jump-pill" type="button" onclick="focusPart(4)">05. Rangka</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 01: STUDIO INSPEKSI 3D DENGAN ARROW PETUNJUK -->
+    <section id="alat">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-meta">01 — Inspeksi 3D & Anatomi Komponen</div>
+          <h2 class="section-title">Inspeksi Tiga Dimensi Alat Praktikum</h2>
+          <p class="section-desc">
+            Amati wujud fisik alat secara langsung melalui model 3D interaktif. Klik tombol panah petunjuk pada model atau pilih bagian pada panel samping untuk memfokuskan kamera dan membaca panduan teknisnya.
+          </p>
+        </div>
+
+        <!-- 3D Studio Layout -->
+        <div class="inspection-studio">
+          
+          <!-- Left: 3D Viewport with Hotspots & Pointer Arrows -->
+          <div class="studio-viewport-card" id="alatKartu">
+            <div class="studio-viewport-header">
+              <div class="studio-badge">
+                <span class="pulse-indicator" aria-hidden="true"></span>
+                <span id="alatTag">INTERACTIVE 3D INSPECTOR</span>
+              </div>
+              <span class="spec-label" id="cameraStatusLabel">FOKUS: 01 CORONG PENGUMPAN</span>
+            </div>
+
+            <div class="studio-stage" id="stageContainer">
+              <model-viewer
+                class="model-viewer-elem"
+                id="alat3d"
+                src="models/alat.glb"
+                alt="Model 3 Dimensi Alat Filament Ekstruder"
+                camera-controls
+                touch-action="pan-y"
+                interaction-prompt="none"
+                environment-image="neutral"
+                exposure="1.05"
+                shadow-intensity="0.75"
+                shadow-softness="0.85"
+                camera-orbit="-35deg 55deg 0.75m"
+                camera-target="-0.06m 0.32m 0.02m"
+                min-field-of-view="10deg"
+                max-field-of-view="45deg"
+                interpolation-decay="120">
+
+                <!-- Hotspot 01: Hopper (Corong) -->
+                <button class="hotspot-pin is-active" slot="hotspot-hopper" data-position="-0.06m 0.36m 0.02m" data-normal="0m 1m 0m" data-idx="0" aria-label="Fokus ke 01 Corong Pengumpan">
+                  <div class="hotspot-arrow-box">
+                    <span>01</span>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                  </div>
+                  <div class="hotspot-arrow-stem"></div>
+                  <div class="hotspot-dot"></div>
+                  <div class="hotspot-callout">01. Corong Pengumpan (Hopper)</div>
+                </button>
+
+                <!-- Hotspot 02: Pemanas & Nozzle -->
+                <button class="hotspot-pin" slot="hotspot-nozzle" data-position="0.18m 0.18m 0.02m" data-normal="1m 0m 0m" data-idx="1" aria-label="Fokus ke 02 Tabung Pemanas & Nozzle">
+                  <div class="hotspot-arrow-box">
+                    <span>02</span>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                  </div>
+                  <div class="hotspot-arrow-stem"></div>
+                  <div class="hotspot-dot"></div>
+                  <div class="hotspot-callout">02. Tabung Pemanas & Nozzle</div>
+                </button>
+
+                <!-- Hotspot 03: Spooler (Penggulung) -->
+                <button class="hotspot-pin" slot="hotspot-spooler" data-position="-0.18m 0.16m 0.08m" data-normal="-1m 0m 0m" data-idx="2" aria-label="Fokus ke 03 Mekanisme Penggulung">
+                  <div class="hotspot-arrow-box">
+                    <span>03</span>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                  </div>
+                  <div class="hotspot-arrow-stem"></div>
+                  <div class="hotspot-dot"></div>
+                  <div class="hotspot-callout">03. Mekanisme Penggulung (Spooler)</div>
+                </button>
+
+                <!-- Hotspot 04: Panel Kontrol LCD -->
+                <button class="hotspot-pin" slot="hotspot-lcd" data-position="0.04m 0.10m 0.14m" data-normal="0m 0m 1m" data-idx="3" aria-label="Fokus ke 04 Panel Kontrol LCD">
+                  <div class="hotspot-arrow-box">
+                    <span>04</span>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                  </div>
+                  <div class="hotspot-arrow-stem"></div>
+                  <div class="hotspot-dot"></div>
+                  <div class="hotspot-callout">04. Panel Kontrol LCD & Otomasi</div>
+                </button>
+
+                <!-- Hotspot 05: Rangka Profil Aluminium -->
+                <button class="hotspot-pin" slot="hotspot-frame" data-position="0.0m 0.04m -0.06m" data-normal="0m 1m 0m" data-idx="4" aria-label="Fokus ke 05 Rangka Profil Aluminium">
+                  <div class="hotspot-arrow-box">
+                    <span>05</span>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                  </div>
+                  <div class="hotspot-arrow-stem"></div>
+                  <div class="hotspot-dot"></div>
+                  <div class="hotspot-callout">05. Rangka Profil Aluminium</div>
+                </button>
+
+              </model-viewer>
+            </div>
+
+            <!-- Viewport Toolbar -->
+            <div class="studio-toolbar" id="alatBar">
+              <div class="studio-hint">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                <span>Klik panah petunjuk atau seret untuk memutar bebas</span>
+              </div>
+              <div class="studio-buttons">
+                <button class="btn-tool" type="button" id="orbitIso" title="Sudut Isometrik">Isometrik</button>
+                <button class="btn-tool" type="button" id="orbitFront" title="Tampak Depan">Depan</button>
+                <button class="btn-tool" type="button" id="orbitSide" title="Tampak Samping">Samping</button>
+                <button class="btn-tool" type="button" id="orbitOverview" title="Tampilan Keseluruhan">Seluruh Alat</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Inspection Detail & Navigation Panel -->
+          <div class="studio-panel">
+            <div>
+              <!-- Navigation Pills -->
+              <div class="part-nav-pills" role="tablist" aria-label="Pilih komponen untuk diinspeksi">
+                <button class="part-nav-btn is-active" type="button" onclick="focusPart(0)">01. Hopper</button>
+                <button class="part-nav-btn" type="button" onclick="focusPart(1)">02. Pemanas</button>
+                <button class="part-nav-btn" type="button" onclick="focusPart(2)">03. Spooler</button>
+                <button class="part-nav-btn" type="button" onclick="focusPart(3)">04. Panel LCD</button>
+                <button class="part-nav-btn" type="button" onclick="focusPart(4)">05. Rangka</button>
+              </div>
+
+              <!-- Active Part Details -->
+              <div class="part-detail-box">
+                <div class="part-badge-row">
+                  <span class="part-code-tag" id="activePartBadge" style="background:var(--accent-primary-wash);color:var(--accent-primary);border:1px solid var(--accent-primary-border);">KOMPONEN 01</span>
+                  <span class="chip" id="activePartSubsystem">SISTEM FEEDING</span>
+                </div>
+
+                <h3 class="part-active-title" id="activePartTitle">Corong Pengumpan (Hopper)</h3>
+                <p class="part-active-desc" id="activePartDesc">
+                  Wadah masukan bahan baku berbentuk corong miring untuk menampung cacahan plastik daur ulang secara teratur menuju ulir sekrup (screw extruder) tanpa menimbulkan penumpukan bahan (bridging).
+                </p>
+
+                <!-- Student Laboratory Guide Notes -->
+                <div class="guide-notes-card">
+                  <div class="guide-note-item">
+                    <svg class="guide-note-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                    <div><strong>Instruksi Praktikum:</strong> <span id="activePartLab">Periksa keseragaman ukuran cacahan plastik sebelum dimasukkan; jangan mengisi melebihi 80% kapasitas corong agar putaran ulir tetap stabil.</span></div>
+                  </div>
+                  <div class="guide-note-item">
+                    <svg class="guide-note-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-warm)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    <div><strong>Perhatian K3:</strong> <span id="activePartSafety">Dilarang memasukkan jari atau benda keras logam ke dalam corong saat motor ekstrusi sedang berputar aktif.</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Guided Tour Controls -->
+            <div class="studio-tour-controls">
+              <button class="btn-tool" type="button" id="prevPartBtn" onclick="prevPart()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                Sebelumnya
+              </button>
+              <span class="tour-counter" id="tourCounter">1 / 5 Komponen</span>
+              <button class="btn-tool" type="button" id="nextPartBtn" onclick="nextPart()">
+                Selanjutnya
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 02: BUKU PANDUAN (FLIPBOOK) -->
+    <section id="panduan">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-meta">02 — Dokumen Standar</div>
+          <h2 class="section-title">Buku Panduan Penggunaan Alat</h2>
+          <p class="section-desc">
+            Panduan resmi operasional memuat spesifikasi detail, SOP praktikum, skema wiring kelistrikan, tata cara kalibrasi suhu, hingga prosedur penanganan gangguan (troubleshooting).
+          </p>
+        </div>
+
+        <!-- Flipbook Desk Reader -->
+        <div class="desk-viewer" id="flipwrap">
+          <div class="desk-toolbar">
+            <div class="desk-doc-info">
+              <span class="desk-doc-badge">BUKU PANDUAN</span>
+              <span class="desk-doc-title" id="bookTitle">Buku Panduan Penggunaan Alat</span>
+            </div>
+            <div class="desk-actions">
+              <button class="btn-action" id="fsBtn" type="button" title="Perbesar ke layar penuh">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                <span>Layar Penuh</span>
+              </button>
+              <a class="btn-action" id="flipTab" href="#" target="_blank" rel="noopener" title="Buka pada tab baru peramban">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>Tab Baru</span>
+              </a>
+              <a class="btn-action btn-action-primary" id="bookDl" href="#" download>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>Unduh PDF</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="desk-stage">
+            <div class="desk-loading" id="flipLoading">
+              <div class="desk-spinner" aria-hidden="true"></div>
+              <span>Memuat buku panduan interaktif Heyzine&hellip;</span>
+            </div>
+            <iframe id="flipFrame" title="Flipbook Buku Panduan Penggunaan" allow="fullscreen; clipboard-write" allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <!-- Academic Context Cards -->
+        <div class="supp-grid">
+          <div class="supp-card">
+            <h3 class="supp-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              Petunjuk Interaksi Flipbook
+            </h3>
+            <ul class="supp-list">
+              <li><strong>Navigasi Lembaran:</strong> Klik atau seret sudut kanan/kiri halaman untuk membalik lembar dokumen.</li>
+              <li><strong>Kenyamanan Membaca:</strong> Manfaatkan tombol <em>Layar Penuh</em> untuk tampilan teks yang tajam dan leluasa.</li>
+              <li><strong>Jendela Terpisah:</strong> Tekan tombol <em>Tab Baru</em> jika ingin membaca berdampingan dengan lembar praktikum lain.</li>
+            </ul>
+          </div>
+
+          <div class="supp-card">
+            <h3 class="supp-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Struktur Pokok Pembahasan
+            </h3>
+            <ol class="supp-list" style="padding-left:18px;">
+              <li>Pengenalan & Spesifikasi Teknis Mesin Ekstruder</li>
+              <li>Keselamatan & Kesehatan Kerja (K3) Laboratorium</li>
+              <li>Prosedur Pengoperasian & Kalibrasi Pemanasan</li>
+              <li>Pengaturan Variasi Kecepatan Motor & Spooling</li>
+              <li>Perawatan Terjadwal & Solusi Masalah (Troubleshooting)</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 03: LABSHEET PRAKTIKUM (TABS) -->
+    <section id="jobsheet">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-meta">03 — Modul Praktikum</div>
+          <h2 class="section-title">Labsheet Pembelajaran Praktikum</h2>
+          <p class="section-desc">
+            Pilih lembar kerja di bawah ini untuk mempelajari modul eksperimen: mulai dari persiapan bahan, tabel pengukuran diameter filamen, hingga tugas analisis data pengamatan.
+          </p>
+        </div>
+
+        <!-- Dynamic Tabs -->
+        <div class="labsheet-tabs" id="lsTabs" role="tablist" aria-label="Pilih modul labsheet praktikum"></div>
+
+        <!-- Labsheet Desk Viewer -->
+        <div class="desk-viewer" id="lsWrap">
+          <div class="desk-toolbar">
+            <div class="desk-doc-info">
+              <span class="desk-doc-badge" id="lsCurrentBadge">MODUL</span>
+              <span class="desk-doc-title" id="lsLabel">Labsheet Praktikum</span>
+            </div>
+            <div class="desk-actions">
+              <button class="btn-action" id="lsFs" type="button" title="Perbesar ke layar penuh">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                <span>Layar Penuh</span>
+              </button>
+              <a class="btn-action" id="lsTab" href="#" target="_blank" rel="noopener" title="Buka pada tab baru peramban">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>Tab Baru</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="desk-stage">
+            <div class="desk-loading" id="lsLoading">
+              <div class="desk-spinner" aria-hidden="true"></div>
+              <span>Memuat modul labsheet praktikum&hellip;</span>
+            </div>
+            <iframe id="lsFrame" title="Flipbook Labsheet Praktikum" allow="fullscreen; clipboard-write" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 04: VIDEO WORKSHOP & DEMONSTRASI -->
+    <section id="video">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-meta">04 — Visual Laboratorium</div>
+          <h2 class="section-title">Video Demonstrasi Alat</h2>
+          <p class="section-desc">
+            Saksikan rekaman langsung prosedur operasional alat dari langkah persiapan bahan, penyetelan parameter suhu pada panel kontrol, hingga pembacaan luaran filamen.
+          </p>
+        </div>
+
+        <div id="vids"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL MULTI VIDEO (JIKA VIDEO LEBIH DARI 1) -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h4 class="modal-title" id="modalTitle">Video Demonstrasi</h4>
+        <button class="modal-close" id="closeModal" aria-label="Tutup pemutar video">&times;</button>
+      </div>
+      <div class="modal-player" id="player"></div>
+    </div>
+  </div>
+
+  <!-- ACADEMIC FOOTER -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-layout">
+        
+        <div class="footer-identity">
+          <div class="footer-logo">
+            <img src="assets/logo-uny.png" alt="Logo Universitas Negeri Yogyakarta" />
+          </div>
+          <div class="footer-text">
+            <span class="footer-tool-name" id="footLeft">Filament Ekstruder — Media Pembelajaran Praktikum</span>
+            <span class="footer-inst-hierarchy" id="footInst">
+              Departemen Pendidikan Teknik Elektro &middot; Program Studi Pendidikan Teknik Mekatronika
+            </span>
+            <span class="footer-univ-tag" id="footUniv">Universitas Negeri Yogyakarta</span>
+          </div>
+        </div>
+
+        <div class="footer-meta-block">
+          <span class="footer-author-tag" id="footRight">
+            Disusun & Dikembangkan oleh: <strong>Farrel Argya Hafizh</strong>
+          </span>
+          <span class="footer-univ-tag">Edisi Dokumentasi Teknis Laboratorium</span>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; <span id="yearVal"></span> Universitas Negeri Yogyakarta &middot; Seluruh hak cipta dilindungi.</span>
+        <button class="footer-backtop" id="backToTop" type="button">
+          <span>Kembali ke atas</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =====================================================================
+       LOGIKA APLIKASI & PUSAT KONFIGURASI
+       ===================================================================== -->
+  <script>
+    /* -------------------------------------------------------------------
+       PUSAT KONFIGURASI — ubah objek ini untuk menyesuaikan isi website
+       ------------------------------------------------------------------- */
+    const CONFIG = {
+      namaAlat: "Filament Ekstruder",
+      penyusun: "Farrel Argya Hafizh",
+
+      institusi: {
+        universitas: "Universitas Negeri Yogyakarta",
+        departemen: "Departemen Pendidikan Teknik Elektro",
+        prodi: "Program Studi Pendidikan Teknik Mekatronika"
+      },
+
+      bukuPanduan: {
+        judul: "Buku Panduan Penggunaan Alat",
+        flipbook: "https://heyzine.com/flip-book/387877c6be.html",
+        file: "" // Kosongkan ("") jika tombol unduh PDF tidak diperlukan
+      },
+
+      labsheets: [
+        { no: "LS-01", judul: "Labsheet 1", desc: "Lembar kerja praktikum bagian pertama.", flipbook: "https://heyzine.com/flip-book/e7a2890e13.html", warna: "blue" },
+        { no: "LS-02", judul: "Labsheet 2", desc: "Lembar kerja praktikum bagian kedua.", flipbook: "https://heyzine.com/flip-book/9973f7ac2e.html", warna: "amber" },
+        { no: "LS-03", judul: "Labsheet 3", desc: "Lembar kerja praktikum bagian ketiga.", flipbook: "https://heyzine.com/flip-book/215b2dad3c.html", warna: "green" },
+        { no: "FULL", judul: "Full Labsheet", desc: "Gabungan lengkap labsheet praktikum.", flipbook: "https://heyzine.com/flip-book/d003a95db7.html", warna: "purple" }
+      ],
+
+      videos: [
+        {
+          judul: "Demonstrasi Pengoperasian Alat",
+          desc: "Rekaman cara kerja alat mulai dari persiapan, pengoperasian panel, hingga pembacaan hasil ekstrusi filamen.",
+          durasi: "",
+          type: "file",
+          src: "videos/demonstrasi-alat.mp4",
+          warna: "green"
+        }
+      ]
+    };
+
+    /* Data 5 Komponen Utama untuk Inspeksi 3D */
+    const PARTS_DATA = [
+      {
+        no: "01",
+        code: "FEEDING SYSTEM",
+        title: "Corong Pengumpan (Hopper)",
+        subsystem: "SISTEM FEEDING",
+        desc: "Wadah masukan bahan baku berbentuk corong miring untuk menampung cacahan plastik daur ulang secara teratur menuju ulir sekrup (screw extruder) tanpa menimbulkan penumpukan bahan (bridging).",
+        labInstruction: "Periksa keseragaman ukuran cacahan plastik sebelum dimasukkan; jangan mengisi melebihi 80% kapasitas corong agar putaran ulir tetap stabil.",
+        safety: "Dilarang memasukkan jari atau benda keras logam ke dalam corong saat motor ekstrusi sedang berputar aktif.",
+        orbit: "-35deg 55deg 0.75m",
+        target: "-0.06m 0.32m 0.02m",
+        color: "#234E78",
+        wash: "#EBF3FA",
+        border: "#BED6EC"
+      },
+      {
+        no: "02",
+        code: "THERMAL BARREL",
+        title: "Tabung Pemanas & Nozzle",
+        subsystem: "SISTEM THERMAL",
+        desc: "Tabung barel bersensor thermocouple dan pemanas band heater yang melelehkan polimer secara merata sebelum ditekan melewati lubang cetak nozzle 1.75 mm.",
+        labInstruction: "Amati kestabilan suhu pada panel kontrol; tunggu hingga suhu mencapai rentang leleh plastik target (misal: 190°C - 210°C untuk PLA) sebelum menghidupkan motor pengumpan.",
+        safety: "Area bersuhu sangat tinggi (>200°C)! Selalu kenakan sarung tangan tahan panas (heat-resistant gloves) saat berada di dekat nozzle.",
+        orbit: "35deg 70deg 0.7m",
+        target: "0.15m 0.18m 0.02m",
+        color: "#BD643C",
+        wash: "#FAF1EC",
+        border: "#F0CEBF"
+      },
+      {
+        no: "03",
+        code: "SPOOLING UNIT",
+        title: "Mekanisme Penggulung (Spooler)",
+        subsystem: "SISTEM PENARIK",
+        desc: "Unit penarik dan penggulung otomatis yang menjaga tegangan filamen tetap konstan agar diameter luaran seragam sebelum digulung rapi pada rol spool.",
+        labInstruction: "Lakukan kalibrasi sinkronisasi antara kecepatan ekstrusi dan putaran spooler agar tarikan tidak terlalu kencang (menipiskan filamen) atau terlalu kendor.",
+        safety: "Jauhkan rambut, dasi, atau pakaian longgar dari rol dan gigi penggulung yang sedang berputar.",
+        orbit: "-75deg 70deg 0.75m",
+        target: "-0.18m 0.16m 0.08m",
+        color: "#2B7855",
+        wash: "#EDF7F1",
+        border: "#BCE2CF"
+      },
+      {
+        no: "04",
+        code: "CONTROL & LCD",
+        title: "Panel Kontrol LCD & Otomasi",
+        subsystem: "SISTEM KONTROL",
+        desc: "Antarmuka pemantauan suhu aktual, pengaturan setpoint PID, kecepatan putaran motor extruder, serta tombol darurat (Emergency Stop).",
+        labInstruction: "Catat deviasi suhu aktual terhadap setpoint pada tabel observasi Labsheet; gunakan tombol rotary untuk menyesuaikan parameter.",
+        safety: "Pastikan tombol Emergency Stop dapat dijangkau dengan cepat sewaktu-waktu terjadi lonjakan arus atau gangguan mekanis tak terduga.",
+        orbit: "15deg 80deg 0.65m",
+        target: "0.04m 0.10m 0.14m",
+        color: "#625088",
+        wash: "#F3EFF9",
+        border: "#DACFEA"
+      },
+      {
+        no: "05",
+        code: "FRAME STRUCTURE",
+        title: "Rangka Profil Aluminium V-Slot",
+        subsystem: "RANGKAIAN STRUKTUR",
+        desc: "Konstruksi rigid berstandar industri berbahan paduan aluminium ekstrusi yang meminimalkan getaran motor saat proses ekstrusi berlangsung sehingga kestabilan mekanik tetap terjaga.",
+        labInstruction: "Lakukan pemeriksaan torsi baut penahan struktur sebelum memulai praktikum untuk memastikan tidak ada kelonggaran sambungan.",
+        safety: "Pastikan dudukan alat berada di atas meja laboratorium yang kokoh, rata, dan tidak bergoyang.",
+        orbit: "35deg 72deg 1.15m",
+        target: "0.0m 0.20m 0.0m",
+        color: "#B88224",
+        wash: "#FDF7EA",
+        border: "#F4DFB1"
+      }
+    ];
+
+    let currentPartIndex = 0;
+
+    /* Fungsi Fokus Komponen 3D */
+    function focusPart(idx) {
+      if(idx < 0 || idx >= PARTS_DATA.length) return;
+      currentPartIndex = idx;
+      const part = PARTS_DATA[idx];
+      const mv = document.getElementById("alat3d");
+
+      // Animasikan kamera 3D ke komponen target
+      if(mv) {
+        mv.cameraTarget = part.target;
+        mv.cameraOrbit = part.orbit;
+      }
+
+      // Perbarui label status fokus kamera
+      const statusLabel = document.getElementById("cameraStatusLabel");
+      if(statusLabel) statusLabel.textContent = `FOKUS: ${part.no} ${part.title.toUpperCase()}`;
+
+      // Perbarui status aktif hotspot pin & panah
+      document.querySelectorAll(".hotspot-pin").forEach((pin, i) => {
+        pin.classList.toggle("is-active", i === idx);
+      });
+
+      // Perbarui tombol tab navigasi samping
+      document.querySelectorAll(".part-nav-btn").forEach((btn, i) => {
+        btn.classList.toggle("is-active", i === idx);
+      });
+
+      // Perbarui konten detail panel
+      document.getElementById("activePartBadge").textContent = `KOMPONEN ${part.no}`;
+      document.getElementById("activePartBadge").style.color = part.color;
+      document.getElementById("activePartBadge").style.backgroundColor = part.wash;
+      document.getElementById("activePartBadge").style.borderColor = part.border;
+
+      document.getElementById("activePartSubsystem").textContent = part.subsystem;
+      document.getElementById("activePartTitle").textContent = part.title;
+      document.getElementById("activePartDesc").textContent = part.desc;
+      document.getElementById("activePartLab").textContent = part.labInstruction;
+      document.getElementById("activePartSafety").textContent = part.safety;
+
+      document.getElementById("tourCounter").textContent = `${idx + 1} / ${PARTS_DATA.length} Komponen`;
+    }
+
+    function nextPart() {
+      const nextIdx = (currentPartIndex + 1) % PARTS_DATA.length;
+      focusPart(nextIdx);
+    }
+
+    function prevPart() {
+      const prevIdx = (currentPartIndex - 1 + PARTS_DATA.length) % PARTS_DATA.length;
+      focusPart(prevIdx);
+    }
+
+    /* Palet Warna Aksen untuk Labsheet & Video */
+    const ACCENTS = {
+      blue: { text: "#234E78", wash: "#EBF3FA", border: "#BED6EC" },
+      amber: { text: "#B88224", wash: "#FDF7EA", border: "#F4DFB1" },
+      yellow: { text: "#B88224", wash: "#FDF7EA", border: "#F4DFB1" },
+      green: { text: "#2B7855", wash: "#EDF7F1", border: "#BCE2CF" },
+      purple: { text: "#625088", wash: "#F3EFF9", border: "#DACFEA" },
+      pink: { text: "#A64D79", wash: "#F9EDF3", border: "#E8C2D5" },
+      red: { text: "#BD643C", wash: "#FAF1EC", border: "#F0CEBF" }
+    };
+
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+
+    // Inisialisasi Identitas Teks
+    document.getElementById("brandName").textContent = CONFIG.namaAlat;
+    const inst = CONFIG.institusi || {};
+    if(inst.universitas) {
+      document.getElementById("heroInstLabel").textContent = inst.universitas;
+      document.getElementById("footUniv").textContent = inst.universitas;
+    }
+    document.getElementById("footInst").textContent = [inst.departemen, inst.prodi].filter(Boolean).join(" \u00b7 ");
+    document.getElementById("footLeft").textContent = CONFIG.namaAlat + " \u2014 Media Pembelajaran Praktikum";
+    document.getElementById("footRight").innerHTML = "Disusun & Dikembangkan oleh: <strong>" + esc(CONFIG.penyusun) + "</strong>";
+    document.getElementById("yearVal").textContent = new Date().getFullYear();
+
+    // Back to top button
+    document.getElementById("backToTop").addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    // Mobile Drawer Navigation
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileDrawer = document.getElementById("mobileDrawer");
+    menuBtn.addEventListener("click", () => {
+      const isOpen = mobileDrawer.classList.toggle("is-open");
+      menuBtn.setAttribute("aria-expanded", isOpen);
+    });
+    mobileDrawer.addEventListener("click", e => {
+      if(e.target.tagName === "A") {
+        mobileDrawer.classList.remove("is-open");
+        menuBtn.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    /* -------------------------------------------------------------------
+       3D INSPECTION WORKBENCH & HOTSPOTS
+       ------------------------------------------------------------------- */
+    const alat3d = document.getElementById("alat3d");
+    if(alat3d) {
+      const kartu = document.getElementById("alatKartu");
+      const stage = document.getElementById("stageContainer");
+      let fallbackTriggered = false;
+
+      // Fallback ke video jika 3D model tidak bisa dimuat
+      const activateFallback = () => {
+        if(fallbackTriggered) return;
+        fallbackTriggered = true;
+        const bar = document.getElementById("alatBar");
+        if(bar) bar.remove();
+        alat3d.remove();
+
+        const v = document.createElement("video");
+        v.className = "model-fallback-vid";
+        v.id = "animAlat";
+        v.poster = "assets/animasi-poster.png";
+        v.autoplay = true;
+        v.muted = true;
+        v.loop = true;
+        v.setAttribute("playsinline", "");
+        v.setAttribute("preload", "metadata");
+
+        const s1 = document.createElement("source");
+        s1.src = "videos/animasi-desain.webm";
+        s1.type = "video/webm";
+        v.appendChild(s1);
+
+        const s2 = document.createElement("source");
+        s2.src = "videos/animasi-desain.mp4";
+        s2.type = "video/mp4";
+        v.appendChild(s2);
+
+        v.addEventListener("click", () => {
+          if(v.paused) v.play(); else v.pause();
+        });
+
+        stage.appendChild(v);
+        const tag = document.getElementById("alatTag");
+        if(tag) tag.textContent = "ANIMASI DESAIN 3D";
+        if(window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          v.removeAttribute("autoplay");
+          v.pause();
+        }
+      };
+
+      alat3d.addEventListener("error", activateFallback);
+      setTimeout(() => {
+        if(!window.customElements || !window.customElements.get("model-viewer")) activateFallback();
+      }, 9000);
+
+      // Event Listener Klik pada Hotspot Pin
+      document.querySelectorAll(".hotspot-pin").forEach(pin => {
+        pin.addEventListener("click", () => {
+          const idx = Number(pin.dataset.idx);
+          focusPart(idx);
+        });
+      });
+
+      // Toolbar Angle Preset Buttons
+      const btnIso = document.getElementById("orbitIso");
+      const btnFront = document.getElementById("orbitFront");
+      const btnSide = document.getElementById("orbitSide");
+      const btnOverview = document.getElementById("orbitOverview");
+
+      if(btnIso) btnIso.addEventListener("click", () => {
+        alat3d.cameraTarget = "0.0m 0.20m 0.0m";
+        alat3d.cameraOrbit = "45deg 65deg 1.1m";
+        document.getElementById("cameraStatusLabel").textContent = "SUDUT ISOMETRIK";
+      });
+      if(btnFront) btnFront.addEventListener("click", () => {
+        alat3d.cameraTarget = "0.0m 0.20m 0.0m";
+        alat3d.cameraOrbit = "0deg 90deg 1.1m";
+        document.getElementById("cameraStatusLabel").textContent = "TAMPAK DEPAN";
+      });
+      if(btnSide) btnSide.addEventListener("click", () => {
+        alat3d.cameraTarget = "0.0m 0.20m 0.0m";
+        alat3d.cameraOrbit = "90deg 90deg 1.1m";
+        document.getElementById("cameraStatusLabel").textContent = "TAMPAK SAMPING";
+      });
+      if(btnOverview) btnOverview.addEventListener("click", () => {
+        alat3d.cameraTarget = "0.0m 0.20m 0.0m";
+        alat3d.cameraOrbit = "35deg 72deg 1.2m";
+        document.getElementById("cameraStatusLabel").textContent = "TAMPILAN SELURUH ALAT";
+      });
+    }
+
+    /* -------------------------------------------------------------------
+       BUKU PANDUAN (FLIPBOOK HEYZINE)
+       ------------------------------------------------------------------- */
+    const bp = CONFIG.bukuPanduan;
+    const flipFrame = document.getElementById("flipFrame");
+    const flipLoading = document.getElementById("flipLoading");
+    const flipTab = document.getElementById("flipTab");
+    const fsBtn = document.getElementById("fsBtn");
+    const flipwrap = document.getElementById("flipwrap");
+    const dlBtn = document.getElementById("bookDl");
+
+    document.getElementById("bookTitle").textContent = bp.judul;
+    const docSource = bp.flipbook || bp.file;
+    flipTab.href = docSource;
+    flipFrame.src = docSource;
+
+    if(!bp.file && dlBtn) {
+      dlBtn.remove();
+    } else if(dlBtn) {
+      dlBtn.href = bp.file;
+    }
+
+    let flipLoaded = false;
+    flipFrame.addEventListener("load", () => {
+      flipLoaded = true;
+      flipLoading.classList.add("is-hidden");
+    });
+
+    setTimeout(() => {
+      if(flipLoaded) return;
+      flipLoading.innerHTML = `
+        <div style="font-weight:700;font-size:15px;color:#fff;margin-bottom:4px;">Flipbook Membutuhkan Koneksi Internet</div>
+        <div style="max-width:320px;font-size:13.5px;color:#CBD5E1;line-height:1.5;margin-bottom:12px;">Periksa jaringan Anda atau klik tombol di bawah untuk membuka flipbook langsung.</div>
+        <a class="btn-action btn-action-primary" href="${docSource}" target="_blank" rel="noopener">Buka Flipbook di Tab Baru</a>
+      `;
+    }, 8500);
+
+    // Fullscreen Toggle
+    fsBtn.addEventListener("click", () => {
+      if(document.fullscreenElement) {
+        document.exitFullscreen();
+      } else if(flipwrap.requestFullscreen) {
+        flipwrap.requestFullscreen();
+      } else {
+        window.open(docSource, "_blank", "noopener");
+      }
+    });
+    document.addEventListener("fullscreenchange", () => {
+      const isFs = !!document.fullscreenElement;
+      fsBtn.querySelector("span").textContent = isFs ? "Keluar Layar Penuh" : "Layar Penuh";
+    });
+
+    /* -------------------------------------------------------------------
+       LABSHEET PRAKTIKUM (DYNAMIC TABS)
+       ------------------------------------------------------------------- */
+    const lsList = CONFIG.labsheets || [];
+    const lsTabs = document.getElementById("lsTabs");
+    const lsFrame = document.getElementById("lsFrame");
+    const lsLoading = document.getElementById("lsLoading");
+    const lsLabel = document.getElementById("lsLabel");
+    const lsCurrentBadge = document.getElementById("lsCurrentBadge");
+    const lsTabLink = document.getElementById("lsTab");
+    const lsWrap = document.getElementById("lsWrap");
+    let lsTimer = null;
+
+    lsTabs.innerHTML = lsList.map((item, idx) => {
+      const palette = ACCENTS[item.warna] || ACCENTS.blue;
+      return `
+        <button class="lab-tab-btn" type="button" role="tab" data-i="${idx}" aria-selected="${idx === 0}">
+          <span class="tab-badge" style="color:${palette.text};background:${palette.wash};border:1px solid ${palette.border}">
+            ${esc(item.no)}
+          </span>
+          <span>${esc(item.judul)}</span>
+        </button>
+      `;
+    }).join("");
+
+    function loadLabsheet(idx) {
+      const item = lsList[idx];
+      if(!item) return;
+
+      lsTabs.querySelectorAll(".lab-tab-btn").forEach((btn, j) => {
+        btn.setAttribute("aria-selected", j === idx);
+      });
+
+      lsCurrentBadge.textContent = item.no;
+      lsLabel.textContent = `${item.judul} \u2014 ${item.desc}`;
+      lsTabLink.href = item.flipbook;
+
+      lsLoading.className = "desk-loading";
+      lsLoading.innerHTML = `
+        <div class="desk-spinner" aria-hidden="true"></div>
+        <span>Memuat ${esc(item.judul)}&hellip;</span>
+      `;
+      lsFrame.src = item.flipbook;
+
+      clearTimeout(lsTimer);
+      lsTimer = setTimeout(() => {
+        lsLoading.innerHTML = `
+          <div style="font-weight:700;font-size:15px;color:#fff;margin-bottom:4px;">Flipbook Membutuhkan Koneksi Internet</div>
+          <div style="max-width:320px;font-size:13.5px;color:#CBD5E1;line-height:1.5;margin-bottom:12px;">Periksa jaringan Anda atau buka modul langsung lewat tombol di bawah.</div>
+          <a class="btn-action btn-action-primary" href="${item.flipbook}" target="_blank" rel="noopener">Buka Modul Langsung</a>
+        `;
+      }, 8500);
+    }
+
+    lsFrame.addEventListener("load", () => {
+      clearTimeout(lsTimer);
+      lsLoading.classList.add("is-hidden");
+    });
+
+    lsTabs.addEventListener("click", e => {
+      const btn = e.target.closest(".lab-tab-btn");
+      if(btn) loadLabsheet(Number(btn.dataset.i));
+    });
+
+    if(lsList.length > 0) {
+      loadLabsheet(0);
+    }
+
+    document.getElementById("lsFs").addEventListener("click", () => {
+      if(document.fullscreenElement) {
+        document.exitFullscreen();
+      } else if(lsWrap.requestFullscreen) {
+        lsWrap.requestFullscreen();
+      } else {
+        window.open(lsTabLink.href, "_blank", "noopener");
+      }
+    });
+
+    /* -------------------------------------------------------------------
+       VIDEO DEMONSTRASI (STUDIO VIEWPORT & MODAL GRID)
+       ------------------------------------------------------------------- */
+    const vidsContainer = document.getElementById("vids");
+    const playSvg = `
+      <span class="play-btn-circle" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>
+      </span>
+    `;
+
+    function ytId(url) {
+      return (String(url).match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/)||[])[1] || url;
+    }
+
+    function generateMediaTag(v, auto) {
+      const a = auto ? 1 : 0;
+      if(v.type === "youtube" && v.src) {
+        return `<iframe src="https://www.youtube.com/embed/${ytId(v.src)}?autoplay=${a}" title="${esc(v.judul)}" allow="accelerometer;autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>`;
+      }
+      if(v.src) {
+        return `<video src="${esc(v.src)}" controls ${auto ? "autoplay" : ""} playsinline></video>`;
+      }
+      return `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#94A3B8;font-size:14px;">Video belum ditautkan.</div>`;
+    }
+
+    if(CONFIG.videos.length === 1) {
+      const v = CONFIG.videos[0];
+      vidsContainer.innerHTML = `
+        <div class="video-showcase">
+          <button class="video-viewport" id="singleVideoViewport" aria-label="Putar video ${esc(v.judul)}">
+            ${playSvg}
+          </button>
+          <div class="video-caption-bar">
+            <div class="video-text">
+              <h4>${esc(v.judul)}</h4>
+              <p>${esc(v.desc)}</p>
+            </div>
+            <div class="video-badges">
+              <span class="chip">${v.type === "youtube" ? "YouTube Stream" : "Video MP4 Laboratorium"}</span>
+              ${v.durasi ? `<span class="chip">${esc(v.durasi)}</span>` : ""}
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("singleVideoViewport").addEventListener("click", function startPlay() {
+        this.innerHTML = generateMediaTag(v, true);
+        this.style.cursor = "default";
+        this.removeEventListener("click", startPlay);
+      });
+    } else {
+      vidsContainer.className = "video-grid";
+      vidsContainer.innerHTML = CONFIG.videos.map((v, i) => `
+        <div class="video-card" data-i="${i}" tabindex="0" role="button" aria-label="Tonton video ${esc(v.judul)}">
+          <div class="video-viewport" style="aspect-ratio:16/9;">
+            ${playSvg}
+          </div>
+          <div style="padding:16px 18px;">
+            <h4 style="margin:0 0 6px;font-size:16px;font-weight:700;">${esc(v.judul)}</h4>
+            <p style="margin:0;color:var(--text-secondary);font-size:13.5px;">${esc(v.desc)}</p>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // Modal Support untuk Multi-Videos
+    const modal = document.getElementById("modal");
+    const player = document.getElementById("player");
+    let prevFocus = null;
+
+    function openModal(idx) {
+      const v = CONFIG.videos[idx];
+      if(!v) return;
+      prevFocus = document.activeElement;
+      document.getElementById("modalTitle").textContent = v.judul;
+      player.innerHTML = generateMediaTag(v, true);
+      modal.classList.add("is-open");
+      document.body.style.overflow = "hidden";
+      document.getElementById("closeModal").focus();
+    }
+
+    function closeModal() {
+      modal.classList.remove("is-open");
+      player.innerHTML = "";
+      document.body.style.overflow = "";
+      if(prevFocus) prevFocus.focus();
+    }
+
+    vidsContainer.addEventListener("click", e => {
+      const card = e.target.closest(".video-card");
+      if(card) openModal(Number(card.dataset.i));
+    });
+    document.getElementById("closeModal").addEventListener("click", closeModal);
+    modal.addEventListener("click", e => { if(e.target === modal) closeModal(); });
+    document.addEventListener("keydown", e => {
+      if(e.key === "Escape" && modal.classList.contains("is-open")) closeModal();
+    });
+
+    // Inisialisasi awal fokus ke komponen pertama
+    focusPart(0);
+  </script>
+</body>
+</html>

@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Filament Ekstruder — Dokumentasi Alat Praktikum</title>
+<meta name="description" content="Buku panduan, labsheet, dan video demonstrasi alat Filament Ekstruder. Program Studi Pendidikan Teknik Mekatronika, Departemen Pendidikan Teknik Elektro, Universitas Negeri Yogyakarta.">
+<link rel="icon" href="assets/logo-uny.png">
+<link rel="preload" href="models/alat.glb" as="fetch" crossorigin="anonymous">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+<style>
+:root{
+  --canvas:#141414; --surface:#1c1c1c; --raised:#242424; --raised2:#2e2e2c;
+  --text:#ffffff; --muted:rgba(255,255,255,.62); --faint:rgba(255,255,255,.40);
+  --border:rgba(255,255,255,.14); --border-strong:rgba(255,255,255,.24);
+  --blue:#5E9FE8; --yellow:#EAC26B; --red:#E97366; --pink:#DF84A8; --green:#72BC8F;
+  --r:8px; --r-lg:12px;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--canvas);color:var(--text);font:16px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px}
+@media (max-width:640px){.wrap{padding:0 20px}}
+
+/* ---------- nav ---------- */
+.nav{position:sticky;top:0;z-index:50;background:rgba(20,20,20,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav-in{display:flex;align-items:center;gap:24px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:650;letter-spacing:-.01em;text-decoration:none;flex:1;min-width:0}
+.brand span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-links{display:flex;gap:4px}
+.nav-links a{padding:10px 14px;border-radius:var(--r);text-decoration:none;color:var(--muted);font-size:14px;font-weight:520;min-height:44px;display:flex;align-items:center}
+.nav-links a:hover{background:var(--raised);color:var(--text)}
+.nav-links a:focus-visible,.btn:focus-visible,.card:focus-visible,.jl:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+@media (max-width:760px){.nav-links{display:none}}
+.menu-btn{display:none;width:44px;height:44px;align-items:center;justify-content:center;background:var(--raised);border:1px solid var(--border);border-radius:var(--r);color:var(--text);cursor:pointer}
+@media (max-width:760px){.menu-btn{display:flex}}
+.drawer{display:none;border-top:1px solid var(--border);padding:8px 0 16px}
+.drawer.open{display:block}
+.drawer a{display:block;padding:13px 4px;text-decoration:none;color:var(--muted);font-size:15px;border-bottom:1px solid var(--border)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+.hero::before{content:"";position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:56px 56px;mask-image:radial-gradient(ellipse 80% 70% at 30% 0%,#000 20%,transparent 75%)}
+.hero::after{content:"";position:absolute;top:-160px;right:-120px;width:520px;height:520px;border-radius:50%;
+  background:radial-gradient(circle,rgba(94,159,232,.20),transparent 68%);pointer-events:none}
+.hero-in{position:relative;padding:80px 0 72px;max-width:760px}
+@media (max-width:640px){.hero-in{padding:56px 0 48px}}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--yellow);
+  background:rgba(234,194,107,.10);border:1px solid rgba(234,194,107,.30);padding:8px 12px;border-radius:999px}
+h1{font-size:clamp(34px,6vw,52px);line-height:1.08;letter-spacing:-.03em;margin:24px 0 0;font-weight:680}
+.lede{color:var(--muted);font-size:18px;margin:16px 0 0;max-width:620px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:12px 20px;border-radius:var(--r);text-decoration:none;
+  font-size:15px;font-weight:600;border:1px solid var(--border-strong);background:var(--raised);color:var(--text);cursor:pointer;font-family:inherit}
+.btn:hover{background:var(--raised2)}
+.btn-primary{background:var(--blue);border-color:var(--blue);color:#0d1a29}
+.btn-primary:hover{background:#79b0ed}
+.stats{display:flex;flex-wrap:wrap;gap:32px;margin-top:48px;padding-top:28px;border-top:1px solid var(--border)}
+.stat b{display:block;font-size:26px;letter-spacing:-.02em}
+.stat small{color:var(--faint);font:500 12px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase}
+
+/* ---------- section ---------- */
+section{padding:72px 0;border-bottom:1px solid var(--border)}
+@media (max-width:640px){section{padding:52px 0}}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:32px;flex-wrap:wrap}
+.tag{display:inline-flex;align-items:center;gap:8px;font:600 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.dot{width:8px;height:8px;border-radius:2px;background:var(--blue)}
+h2{font-size:clamp(24px,3.4vw,30px);letter-spacing:-.02em;margin:12px 0 0;font-weight:660}
+.sub{color:var(--muted);font-size:15px;margin:8px 0 0;max-width:600px}
+
+/* ---------- panduan ---------- */
+.panduan{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:stretch}
+@media (max-width:860px){.panduan{grid-template-columns:1fr}}
+.book{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px;display:flex;flex-direction:column}
+.book-top{display:flex;gap:18px;align-items:flex-start}
+.pdf-mark{flex:none;width:56px;height:68px;border-radius:6px;background:linear-gradient(160deg,#2a2320,#1e1a18);border:1px solid rgba(233,115,102,.4);
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;font:700 11px/1 var(--mono);color:var(--red);letter-spacing:.06em}
+.book h3{margin:0;font-size:20px;letter-spacing:-.01em}
+.book p{color:var(--muted);font-size:14px;margin:8px 0 0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.chip{font:500 12px/1 var(--mono);color:var(--muted);background:var(--raised);border:1px solid var(--border);padding:7px 10px;border-radius:6px}
+.toc{margin-top:24px;padding-top:20px;border-top:1px solid var(--border);flex:1}
+.toc-t{font:600 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
+.toc ol{margin:0;padding-left:20px;color:var(--muted);font-size:14px}
+.toc li{margin:7px 0}
+.tips{margin:0;padding-left:18px;color:var(--muted);font-size:14px;list-style:none}
+.tips li{margin:10px 0;position:relative}
+.tips li::before{content:"";position:absolute;left:-18px;top:8px;width:6px;height:6px;border-radius:2px;background:var(--blue)}
+.tips em{color:var(--text);font-style:normal;font-weight:600}
+.book .cta{margin-top:24px}
+/* ---------- flipbook ---------- */
+.flipwrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:20px}
+.flip-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:13px 18px;border-bottom:1px solid var(--border);background:var(--raised)}
+.flip-id{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--muted);min-width:0}
+.live{width:7px;height:7px;border-radius:50%;flex:none;background:var(--green);box-shadow:0 0 0 3px rgba(114,188,143,.16)}
+.flip-tools{display:flex;gap:8px;flex-wrap:wrap}
+.btn-sm{min-height:40px;padding:9px 14px;font-size:13.5px}
+.flip-stage{position:relative;aspect-ratio:16/10;background:#0e0e0e}
+@media (max-width:700px){.flip-stage{aspect-ratio:3/4}}
+.flip-stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.flip-loading{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px;text-align:center;color:var(--muted);font-size:13.5px;background:#0e0e0e}
+.flip-loading.hide{opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s}
+.spinner{width:26px;height:26px;border:2px solid rgba(255,255,255,.16);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spinner{animation:none;border-top-color:var(--blue)}}
+.flipwrap:fullscreen{border-radius:0;border:0}
+.flipwrap:fullscreen .flip-stage{aspect-ratio:auto;height:calc(100vh - 67px)}
+
+/* ---------- tab labsheet ---------- */
+.ls-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.ls-tab{display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:11px 17px;border-radius:var(--r);border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:border-color .15s,color .15s,background .15s}
+.ls-tab:hover{border-color:var(--border-strong);color:var(--text)}
+.ls-tab .lsnum{font:700 11px/1 var(--mono);letter-spacing:.06em;padding:5px 7px;border-radius:5px}
+.ls-tab[aria-selected="true"]{color:var(--text);background:var(--raised);border-color:var(--border-strong)}
+.ls-tab:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+@media (max-width:560px){.ls-tabs{flex-direction:column}.ls-tab{width:100%;justify-content:flex-start}}
+
+/* ---------- jobsheet ---------- */
+.jobs{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:16px}
+.jl{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px;transition:border-color .15s,background .15s}
+.jl:hover{background:var(--raised);border-color:var(--border-strong)}
+.jl-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.num{font:700 12px/1 var(--mono);letter-spacing:.08em;padding:7px 10px;border-radius:6px}
+.jl h4{margin:0;font-size:16px;letter-spacing:-.01em;line-height:1.35}
+.jl p{color:var(--muted);font-size:13.5px;margin:8px 0 0}
+.jl-foot{display:flex;align-items:center;gap:6px;margin-top:18px;font:600 12px/1 var(--mono);letter-spacing:.06em;color:var(--faint)}
+.arrow{transition:transform .15s}
+.jl:hover .arrow{transform:translateX(3px)}
+
+/* ---------- jobsheet tunggal ---------- */
+.jobs.single{grid-template-columns:1fr}
+.jl-feat{display:flex;align-items:center;gap:26px;padding:26px 28px}
+@media (max-width:760px){.jl-feat{flex-direction:column;align-items:flex-start;gap:20px}}
+.fico{flex:none;width:58px;height:70px;border-radius:7px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:9px;font:700 11px/1 var(--mono);letter-spacing:.06em}
+.jl-feat-body{flex:1;min-width:0}
+.jl-feat-body h4{font-size:19px;margin-top:12px}
+.jl-feat-body p{font-size:14.5px;max-width:600px}
+.fbtn{flex:none;display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:12px 20px;border-radius:var(--r);font-size:15px;font-weight:600;border:1px solid var(--border-strong);background:var(--raised)}
+.jl:hover .fbtn{background:var(--raised2)}
+.jl-feat .jl-foot{margin-top:14px}
+
+/* ---------- video tunggal ---------- */
+.vstage{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.vscreen{position:relative;width:100%;padding:0;border:0;aspect-ratio:16/9;background:#0e0e0e;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;color:inherit}
+.vscreen video,.vscreen iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.vscreen:focus-visible{outline:2px solid var(--blue);outline-offset:-3px}
+.vscreen .play{width:66px;height:66px}
+.vscreen:hover .play{transform:scale(1.08);background:rgba(255,255,255,.18)}
+.vstage-info{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding:20px 24px;border-top:1px solid var(--border);flex-wrap:wrap}
+.vstage-info h4{margin:0;font-size:17px;letter-spacing:-.01em}
+.vstage-info p{margin:7px 0 0;color:var(--muted);font-size:14px;max-width:560px}
+.vstage-meta{display:flex;gap:8px;flex:none}
+
+/* ---------- video ---------- */
+.vids{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.vids.single{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;cursor:pointer;text-align:left;padding:0;color:inherit;font-family:inherit;width:100%;transition:border-color .15s}
+.card:hover{border-color:var(--border-strong)}
+.thumb{position:relative;aspect-ratio:16/9;background:#101010;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border)}
+.thumb::before{content:"";position:absolute;inset:0;opacity:.5;
+  background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:28px 28px}
+.play{position:relative;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(4px);transition:transform .15s,background .15s}
+.card:hover .play{transform:scale(1.08);background:rgba(255,255,255,.18)}
+.dur{position:absolute;right:10px;bottom:10px;font:600 11px/1 var(--mono);background:rgba(0,0,0,.72);border:1px solid var(--border);padding:5px 7px;border-radius:5px;color:#fff}
+.card-body{padding:18px 20px 20px}
+.card-body h4{margin:0;font-size:16px;letter-spacing:-.01em}
+.card-body p{color:var(--muted);font-size:13.5px;margin:7px 0 0}
+
+/* ---------- modal ---------- */
+.modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;padding:24px}
+.modal.open{display:flex}
+.modal-in{width:min(960px,100%);background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--r-lg);overflow:hidden}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px;border-bottom:1px solid var(--border)}
+.modal-head h4{margin:0;font-size:16px}
+.x{width:44px;height:44px;flex:none;border-radius:var(--r);background:var(--raised);border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:18px;line-height:1}
+.x:hover{background:var(--raised2)}
+.player{aspect-ratio:16/9;background:#000}
+.player iframe,.player video{width:100%;height:100%;border:0;display:block}
+
+/* ---------- identitas institusi ---------- */
+.hero{position:relative;overflow:hidden}
+.hero-mark{position:absolute;right:-70px;top:50%;transform:translateY(-50%);width:430px;height:auto;opacity:.04;pointer-events:none;user-select:none}
+@media (max-width:1000px){.hero-mark{display:none}}
+.brand-logo{width:27px;height:27px;object-fit:contain;flex:none}
+.inst{display:flex;align-items:center;gap:17px;padding-bottom:22px;margin-bottom:26px;border-bottom:1px solid var(--border)}
+.inst-logo{width:56px;height:auto;flex:none;opacity:.92}
+.inst-txt{display:flex;flex-direction:column;gap:4px;min-width:0}
+.inst-uni{font:700 11px/1.3 var(--mono);letter-spacing:.17em;text-transform:uppercase;color:var(--yellow)}
+.inst-dep{font-size:15px;font-weight:600;color:var(--text);line-height:1.35}
+.inst-prodi{font-size:13.5px;color:var(--muted);line-height:1.4}
+@media (max-width:560px){.inst{gap:14px}.inst-logo{width:46px}.inst-dep{font-size:13.5px}.inst-prodi{font-size:12.5px}.inst-uni{font-size:10px}}
+
+/* ---------- animasi logo ---------- */
+@keyframes putar{from{transform:perspective(560px) rotateY(0deg)}to{transform:perspective(560px) rotateY(360deg)}}
+@keyframes putarMark{from{transform:translateY(-50%) perspective(1600px) rotateY(0deg)}to{transform:translateY(-50%) perspective(1600px) rotateY(360deg)}}
+.brand-logo,.inst-logo,.foot-logo,.hero-mark{transform-style:preserve-3d;backface-visibility:visible}
+.brand-logo{animation:putar 14s linear infinite}
+.inst-logo{animation:putar 9s linear infinite}
+.foot-logo{animation:putar 17s linear infinite}
+.hero-mark{animation:putarMark 55s linear infinite}
+
+/* ---------- wujud alat ---------- */
+@keyframes kedipCincin{0%,100%{box-shadow:0 0 0 0 rgba(94,159,232,.30)}50%{box-shadow:0 0 0 13px rgba(94,159,232,0)}}
+@keyframes apung{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.alat-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:22px;align-items:start}
+@media (max-width:880px){.alat-grid{grid-template-columns:1fr}}
+.sheet{position:relative;margin:0;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;animation:kedipCincin 2.8s ease-in-out infinite}
+.sheet::before{content:"";position:absolute;left:50%;top:44%;width:118%;aspect-ratio:1;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(94,159,232,.17) 0%,rgba(94,159,232,0) 62%);pointer-events:none}
+.sheet::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;background:linear-gradient(90deg,var(--blue) 0 25%,var(--yellow) 25% 50%,var(--green) 50% 75%,var(--red) 75% 100%)}
+.alat3d{position:relative;display:block;width:100%;max-width:none;aspect-ratio:1;min-height:360px;margin:0 auto;background:transparent;cursor:grab;--poster-color:transparent;--progress-bar-color:var(--blue);--progress-mask:transparent}
+.alat3d:active{cursor:grabbing}
+.alat3d-bar{position:relative;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:14px}
+.hint3d{font:600 10.5px/1.5 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--faint);text-align:center}
+.alat-vid{position:relative;display:block;width:100%;max-width:380px;aspect-ratio:420/484;height:auto;margin:0 auto;background:transparent;cursor:pointer;animation:apung 6.5s ease-in-out infinite}
+.vid-tag{position:absolute;top:18px;left:18px;z-index:2;display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:99px;background:var(--raised);border:1px solid var(--border);color:var(--muted);font:600 10.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.sheet figcaption{position:relative;margin-top:14px;text-align:center;font:600 10.5px/1.5 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.sheet.putih{background:#fff;border-color:var(--border-strong)}
+.sheet.putih::before{display:none}
+.sheet.putih figcaption{color:#5b6068}
+.sheet.putih .vid-tag{background:rgba(20,20,20,.82);border-color:transparent;color:#fff}
+.parts{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:8px 24px 12px}
+.parts-t{font:700 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint);padding:20px 0 6px}
+.parts ul{list-style:none;margin:0;padding:0}
+.parts li{display:flex;align-items:flex-start;gap:13px;padding:14px 0;border-bottom:1px solid var(--border);font-size:14.5px;color:var(--muted);line-height:1.5}
+.parts li:last-child{border-bottom:0}
+.pnum{flex:none;font:700 10.5px/1 var(--mono);letter-spacing:.06em;padding:6px 7px;border-radius:5px;margin-top:1px}
+@media (prefers-reduced-motion:reduce){
+  .brand-logo,.inst-logo,.foot-logo,.hero-mark,.sheet,.alat-vid{animation:none}
+}
+
+/* ---------- footer ---------- */
+footer{padding:44px 0;border:0}
+.foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;color:var(--faint);font-size:13.5px}
+.foot-id{display:flex;align-items:center;gap:14px}
+.foot-logo{width:40px;height:auto;flex:none;opacity:.7}
+.foot-txt{display:flex;flex-direction:column;gap:4px}
+.foot-txt b{color:var(--muted);font-weight:600}
+.note{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:var(--r);padding:16px 18px;color:var(--muted);font-size:13.5px;margin-top:28px}
+.note code{font-family:var(--mono);font-size:12.5px;color:var(--yellow);background:rgba(234,194,107,.10);padding:2px 6px;border-radius:4px}
+/* ---------- visual upgrade: soft editorial palette, clean for readers ---------- */
+:root{
+  --canvas:#eee8cf;      /* soft cream */
+  --surface:#f7f1da;     /* warm paper */
+  --raised:#e6d59f;      /* muted sand */
+  --raised2:#d6c28a;
+  --text:#263947;        /* slate blue */
+  --muted:#6f6a64;       /* warm gray */
+  --faint:#8c8780;
+  --border:rgba(38,57,71,.16);
+  --border-strong:rgba(38,57,71,.30);
+  --blue:#465d6d;        /* deep soft blue */
+  --yellow:#e7cf91;      /* beige yellow */
+  --red:#c9855a;         /* terracotta */
+  --pink:#8b8580;        /* warm gray */
+  --green:#8b8580;
+}
+body{
+  background:
+    radial-gradient(circle at 82% 18%,rgba(201,133,90,.16),transparent 28%),
+    radial-gradient(circle at 8% 12%,rgba(70,93,109,.12),transparent 24%),
+    linear-gradient(180deg,#f3edda 0%,#eee8cf 52%,#e8ddbd 100%);
+  color:var(--text);
+}
+.nav{background:rgba(238,232,207,.88);backdrop-filter:blur(14px);border-bottom-color:rgba(38,57,71,.14)}
+.nav-in{height:70px}.brand{font-size:17px;color:#263947}.brand-logo{opacity:.88;filter:none}
+.nav-links a{font-weight:650;color:#625d57}.nav-links a:hover{background:rgba(70,93,109,.10);color:#263947}
+.hero{background:linear-gradient(135deg,rgba(70,93,109,.08),rgba(231,207,145,.22) 48%,rgba(201,133,90,.10));}
+.hero::before{background-size:58px 58px;opacity:.42;mask-image:radial-gradient(ellipse 78% 70% at 30% 8%,#000 10%,transparent 78%)}
+.hero::after{display:block;top:160px;right:7%;width:410px;height:410px;background:radial-gradient(circle,rgba(231,207,145,.42),rgba(201,133,90,.12) 48%,transparent 70%);filter:blur(8px)}
+.hero-in{padding:82px 0 76px}.hero-mark{opacity:.045;filter:none}.brand-logo,.inst-logo,.foot-logo,.hero-mark,.sheet,.alat-vid{animation:none!important}
+.inst{background:rgba(247,241,218,.72);border:1px solid rgba(38,57,71,.14);border-radius:18px;padding:18px 20px;margin-bottom:30px;box-shadow:0 14px 40px rgba(38,57,71,.08)}
+.inst-uni,.eyebrow{color:#b06d38}.eyebrow{background:rgba(231,207,145,.38);border-color:rgba(201,133,90,.24);box-shadow:none}
+h1{font-size:clamp(38px,6.4vw,62px);line-height:1.04;font-weight:780;letter-spacing:-.045em;text-wrap:balance;color:#263947}.lede{font-size:19px;line-height:1.65;color:#5d5a55}
+.btn{border-radius:12px;background:rgba(247,241,218,.72);border-color:rgba(38,57,71,.22);color:#263947;box-shadow:0 10px 26px rgba(38,57,71,.10);transition:transform .16s ease,background .16s ease,border-color .16s ease}.btn:hover{transform:translateY(-1px);background:#f7f1da;border-color:rgba(38,57,71,.34)}
+.btn-primary{background:#465d6d;border-color:#465d6d;color:#fff}.btn-primary:hover{background:#354b59;border-color:#354b59}
+.stats{border-top-color:rgba(38,57,71,.14)}.stat b{font-size:32px;color:#263947}.stat small{color:#7f776e}
+section{background:transparent}.tag{color:#8b8580}.dot{background:#c9855a!important}.sub{color:#665f58}
+.book,.flipwrap,.vstage,.card,.jl,.parts,.sheet{background:rgba(247,241,218,.82);border-color:rgba(38,57,71,.16);box-shadow:0 18px 48px rgba(38,57,71,.10),inset 0 1px 0 rgba(255,255,255,.45)}
+.book:hover,.card:hover,.jl:hover{border-color:rgba(201,133,90,.42)}
+.flip-bar{background:rgba(230,213,159,.42);backdrop-filter:blur(8px)}.flip-stage,.flip-loading,.thumb,.player{background:#2b302f}.flip-id{color:#5c5a55}.live{background:#c9855a;box-shadow:0 0 0 3px rgba(201,133,90,.16)}
+.ls-tab{border-radius:12px;background:rgba(247,241,218,.72);border-color:rgba(38,57,71,.16);color:#665f58}.ls-tab[aria-selected="true"]{background:linear-gradient(135deg,rgba(231,207,145,.58),rgba(201,133,90,.14));border-color:rgba(201,133,90,.48);color:#263947}
+.pdf-mark,.fico{background:#e7cf91;color:#465d6d;border-color:rgba(70,93,109,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.28)}.chip{background:rgba(230,213,159,.34);border-color:rgba(38,57,71,.14);color:#68615a}
+.note{display:none!important}
+footer{background:rgba(247,241,218,.28)}
+@media (max-width:760px){.hero-in{padding:54px 0 50px}.inst{padding:15px}.nav-in{height:64px}}
+
+/* ---------- typography + logo polish ---------- */
+:root{
+  --sans:Arial, Helvetica, sans-serif;
+  --mono:"Courier New", Courier, monospace;
+}
+body{font-family:var(--sans);letter-spacing:0}
+.brand,.nav-links a,.btn,.ls-tab,.card,.jl,.vstage-info{font-family:var(--sans)}
+h1{
+  font-family:Georgia,"Times New Roman",serif;
+  font-weight:700;
+  letter-spacing:-.025em;
+  line-height:1.08;
+  color:#263947;
+}
+h2,h3,h4{
+  font-family:Georgia,"Times New Roman",serif;
+  font-weight:700;
+  letter-spacing:-.01em;
+}
+.lede,.sub,.book p,.jl p,.card-body p,.vstage-info p{font-weight:400;letter-spacing:0}
+.eyebrow,.tag,.stat small,.toc-t,.chip,.num,.ls-tab .lsnum,.inst-uni{
+  font-family:"Courier New", Courier, monospace;
+  letter-spacing:.10em;
+}
+.brand-logo,.inst-logo,.foot-logo{
+  opacity:1!important;
+  filter:none!important;
+  background:#fff;
+  border-radius:50%;
+  padding:2px;
+  box-shadow:0 2px 8px rgba(38,57,71,.14);
+}
+.inst-logo{width:58px;padding:3px}.brand-logo{width:30px;height:30px}.foot-logo{padding:3px}
+.hero-mark{opacity:.075!important;filter:none!important}
+.inst{background:rgba(247,241,218,.86)}
+
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <div class="nav-in">
+      <a class="brand" href="#top">
+        <img class="brand-logo" src="assets/logo-uny.png" alt="Logo Universitas Negeri Yogyakarta">
+        <span id="brandName">Filament Ekstruder</span>
+      </a>
+      <div class="nav-links">
+        <a href="#alat">Wujud Alat</a>
+        <a href="#panduan">Buku Panduan</a>
+        <a href="#jobsheet">Labsheet</a>
+        <a href="#video">Video Demonstrasi</a>
+      </div>
+      <button class="menu-btn" id="menuBtn" aria-label="Buka menu" aria-expanded="false">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 4.5h14M2 9h14M2 13.5h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="drawer" id="drawer">
+      <a href="#alat">Wujud Alat</a>
+      <a href="#panduan">Buku Panduan</a>
+      <a href="#jobsheet">Labsheet</a>
+      <a href="#video">Video Demonstrasi</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <img class="hero-mark" src="assets/logo-uny.png" alt="" aria-hidden="true">
+  <div class="wrap">
+    <div class="hero-in">
+      <div class="inst">
+        <img class="inst-logo" src="assets/logo-uny.png" alt="Logo Universitas Negeri Yogyakarta">
+        <div class="inst-txt">
+          <span class="inst-uni" id="instUni">Universitas Negeri Yogyakarta</span>
+          <span class="inst-dep" id="instDep">Departemen Pendidikan Teknik Elektro</span>
+          <span class="inst-prodi" id="instProdi">Program Studi Pendidikan Teknik Mekatronika</span>
+        </div>
+      </div>
+      <span class="eyebrow">Media Pembelajaran &middot; Filament Ekstruder</span>
+      <h1 id="heroTitle">Dokumentasi lengkap<br>Filament Ekstruder</h1>
+      <p class="lede" id="heroSub">Buku panduan penggunaan, empat pilihan labsheet praktikum, dan video demonstrasi alat &mdash; semuanya dalam satu tempat, bisa dibaca langsung tanpa mengunduh apa pun.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="#panduan">Buka Buku Panduan</a>
+        <a class="btn" href="#video">Tonton Demonstrasi</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b id="sBook">1</b><small>Buku Panduan</small></div>
+        <div class="stat"><b id="sJob">0</b><small>Labsheet</small></div>
+        <div class="stat"><b id="sVid">0</b><small>Video</small></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="alat">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="tag"><i class="dot" style="background:var(--pink)"></i>00 &mdash; Wujud Alat</span>
+        <h2>Rancangan Filament Ekstruder</h2>
+        <p class="sub">Gambar rancangan alat beserta bagian-bagian utamanya. Kenali dulu wujud dan komponennya sebelum membaca buku panduan dan labsheet.</p>
+      </div>
+    </div>
+    <div class="alat-grid">
+      <figure class="sheet" id="alatKartu">
+        <span class="vid-tag" id="alatTag"><i class="live"></i>Model 3D</span>
+        <model-viewer class="alat3d" id="alat3d" src="models/alat.glb"
+          alt="Model tiga dimensi alat Filament Ekstruder"
+          camera-controls touch-action="pan-y" auto-rotate auto-rotate-delay="1200"
+          rotation-per-second="16deg" interaction-prompt="none"
+          environment-image="neutral" exposure="1.05"
+          shadow-intensity="0.6" shadow-softness="0.9"
+          camera-orbit="35deg 72deg 92%"
+          min-field-of-view="10deg" max-field-of-view="45deg"></model-viewer>
+        <div class="alat3d-bar" id="alatBar">
+          <span class="hint3d">Seret untuk memutar &middot; gulir atau cubit untuk memperbesar</span>
+          <button class="btn btn-sm" type="button" id="reset3d">Posisi Awal</button>
+        </div>
+        <figcaption id="alatCap">Model 3D rancangan Filament Ekstruder &mdash; bisa diputar bebas</figcaption>
+      </figure>
+      <div class="parts">
+        <div class="parts-t">Bagian Utama</div>
+        <ul>
+          <li><span class="pnum" style="color:#5E9FE8;background:rgba(94,159,232,.13);border:1px solid #5E9FE844">01</span> Corong pengumpan (hopper) tempat memasukkan cacahan bahan plastik</li>
+          <li><span class="pnum" style="color:#EAC26B;background:rgba(234,194,107,.13);border:1px solid #EAC26B44">02</span> Tabung pemanas dan nozzle yang melelehkan serta membentuk filament</li>
+          <li><span class="pnum" style="color:#72BC8F;background:rgba(114,188,143,.13);border:1px solid #72BC8F44">03</span> Penggulung filament (spool) untuk menampung hasil ekstrusi</li>
+          <li><span class="pnum" style="color:#DF84A8;background:rgba(223,132,168,.13);border:1px solid #DF84A844">04</span> Panel kontrol dengan layar LCD untuk mengatur suhu dan kecepatan</li>
+          <li><span class="pnum" style="color:#E97366;background:rgba(233,115,102,.13);border:1px solid #E9736644">05</span> Rangka profil aluminium sebagai dudukan seluruh komponen</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="panduan">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="tag"><i class="dot" style="background:var(--red)"></i>01 &mdash; Dokumen Utama</span>
+        <h2>Buku Panduan Penggunaan</h2>
+        <p class="sub">Panduan lengkap pengenalan komponen, prosedur pengoperasian, perawatan, serta keselamatan kerja saat menggunakan alat.</p>
+      </div>
+    </div>
+    <div class="flipwrap" id="flipwrap">
+      <div class="flip-bar">
+        <div class="flip-id">
+          <span class="live" aria-hidden="true"></span>
+          <span id="flipLabel">Flipbook interaktif &mdash; klik atau seret sudut halaman untuk membalik</span>
+        </div>
+        <div class="flip-tools">
+          <button class="btn btn-sm" id="fsBtn" type="button">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1.5 5V1.5H5M9 1.5h3.5V5M12.5 9v3.5H9M5 12.5H1.5V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Layar Penuh
+          </button>
+          <a class="btn btn-sm" id="flipTab" href="#" target="_blank" rel="noopener">Tab Baru</a>
+          <a class="btn btn-sm btn-primary" id="bookDl" href="files/buku-panduan.pdf" download>Unduh PDF</a>
+        </div>
+      </div>
+      <div class="flip-stage">
+        <div class="flip-loading" id="flipLoading">
+          <span class="spinner" aria-hidden="true"></span>
+          <span>Memuat flipbook&hellip;</span>
+        </div>
+        <iframe id="flipFrame" title="Flipbook Buku Panduan" allow="fullscreen; clipboard-write" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <div class="panduan">
+      <div class="book">
+        <div class="book-top">
+          <div class="pdf-mark">PDF</div>
+          <div>
+            <h3 id="bookTitle">Buku Panduan Penggunaan Alat</h3>
+            <p id="bookDesc">Dokumen utama yang memuat spesifikasi teknis, diagram rangkaian, langkah pengoperasian, troubleshooting, dan prosedur K3.</p>
+          </div>
+        </div>
+        <div class="meta">
+          <span class="chip">Flipbook Heyzine</span>
+          <span class="chip">Bahasa Indonesia</span>
+          <span class="chip">Revisi 1.0</span>
+        </div>
+        <div class="toc">
+          <div class="toc-t">Cara Membaca</div>
+          <ul class="tips">
+            <li>Klik sudut halaman atau seret untuk membalik lembar.</li>
+            <li>Gunakan tombol <em>Layar Penuh</em> agar teks lebih jelas terbaca.</li>
+            <li>Tekan <em>Tab Baru</em> bila ingin membaca di jendela terpisah.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="book">
+        <div class="toc" style="margin-top:0;padding-top:0;border-top:0">
+          <div class="toc-t">Daftar Isi</div>
+          <ol id="tocList">
+            <li>Pendahuluan &amp; tujuan pembelajaran</li>
+            <li>Spesifikasi teknis alat</li>
+            <li>Pengenalan bagian dan komponen</li>
+            <li>Prosedur keselamatan kerja (K3)</li>
+            <li>Langkah pengoperasian alat</li>
+            <li>Perawatan &amp; penyimpanan</li>
+            <li>Troubleshooting gangguan umum</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="jobsheet">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="tag"><i class="dot" style="background:var(--yellow)"></i>02 &mdash; Lembar Kerja</span>
+        <h2>Labsheet Praktikum</h2>
+        <p class="sub">Empat pilihan labsheet praktikum, termasuk full labsheet, yang memandu langkah demi langkah: tujuan, alat &amp; bahan, prosedur kerja, tabel data pengamatan, hingga tugas analisis. Pilih labsheet di bawah ini untuk membacanya.</p>
+      </div>
+    </div>
+    <div class="ls-tabs" id="lsTabs" role="tablist" aria-label="Pilih labsheet"></div>
+    <div class="flipwrap" id="lsWrap">
+      <div class="flip-bar">
+        <div class="flip-id">
+          <span class="live" aria-hidden="true"></span>
+          <span id="lsLabel">Labsheet</span>
+        </div>
+        <div class="flip-tools">
+          <button class="btn btn-sm" id="lsFs" type="button">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1.5 5V1.5H5M9 1.5h3.5V5M12.5 9v3.5H9M5 12.5H1.5V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Layar Penuh
+          </button>
+          <a class="btn btn-sm" id="lsTab" href="#" target="_blank" rel="noopener">Tab Baru</a>
+        </div>
+      </div>
+      <div class="flip-stage">
+        <div class="flip-loading" id="lsLoading">
+          <span class="spinner" aria-hidden="true"></span>
+          <span>Memuat labsheet&hellip;</span>
+        </div>
+        <iframe id="lsFrame" title="Flipbook Labsheet" allow="fullscreen; clipboard-write" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="video">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="tag"><i class="dot" style="background:var(--green)"></i>03 &mdash; Visual</span>
+        <h2>Video Demonstrasi Alat</h2>
+        <p class="sub">Rekaman cara kerja dan pengoperasian alat. Tekan tombol putar untuk menonton langsung di halaman ini.</p>
+      </div>
+    </div>
+    <div class="vids" id="vids"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div class="foot-id">
+        <img class="foot-logo" src="assets/logo-uny.png" alt="Logo Universitas Negeri Yogyakarta">
+        <div class="foot-txt">
+          <b id="footLeft">Filament Ekstruder &mdash; media pembelajaran praktikum</b>
+          <span id="footInst">Departemen Pendidikan Teknik Elektro &middot; Program Studi Pendidikan Teknik Mekatronika</span>
+        </div>
+      </div>
+      <span id="footRight">Disusun oleh Farrel Argya Hafizh</span>
+    </div>
+  </div>
+</footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-in">
+    <div class="modal-head">
+      <h4 id="modalTitle">Video</h4>
+      <button class="x" id="closeModal" aria-label="Tutup video">&times;</button>
+    </div>
+    <div class="player" id="player"></div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   PUSAT KONFIGURASI — ubah bagian ini saja untuk mengganti isi website
+   ===================================================================== */
+const CONFIG = {
+  namaAlat: "Filament Ekstruder",
+  penyusun: "Farrel Argya Hafizh",
+
+  institusi: {
+    universitas: "Universitas Negeri Yogyakarta",
+    departemen: "Departemen Pendidikan Teknik Elektro",
+    prodi: "Program Studi Pendidikan Teknik Mekatronika"
+  },
+
+  bukuPanduan: {
+    judul: "Buku Panduan Penggunaan Alat",
+    // Link flipbook Heyzine.
+    flipbook: "https://heyzine.com/flip-book/387877c6be.html",
+    // PDF untuk tombol unduh. Kosongkan ("") kalau tidak ada, tombolnya hilang sendiri.
+    file: ""
+  },
+
+  // Tambah labsheet? Salin satu baris di bawah ini. Jumlah tab menyesuaikan otomatis.
+  labsheets: [
+    { no:"LS-01", judul:"Labsheet 1", desc:"Lembar kerja praktikum bagian pertama.", flipbook:"https://heyzine.com/flip-book/e7a2890e13.html", warna:"blue" },
+    { no:"LS-02", judul:"Labsheet 2", desc:"Lembar kerja praktikum bagian kedua.", flipbook:"https://heyzine.com/flip-book/9973f7ac2e.html", warna:"yellow" },
+    { no:"LS-03", judul:"Labsheet 3", desc:"Lembar kerja praktikum bagian ketiga.", flipbook:"https://heyzine.com/flip-book/215b2dad3c.html", warna:"green" },
+    { no:"FULL", judul:"Full Labsheet", desc:"Gabungan lengkap labsheet praktikum.", flipbook:"https://heyzine.com/flip-book/d003a95db7.html", warna:"pink" }
+  ],
+
+  // Tambah video? Salin satu baris di bawah ini. Tampilan menyesuaikan otomatis.
+  videos: [
+    { judul:"Demonstrasi Pengoperasian Alat", desc:"Rekaman cara kerja alat mulai dari persiapan, pengoperasian, hingga pembacaan hasil.", durasi:"", type:"file", src:"videos/demonstrasi-alat.mp4", warna:"green" }
+  ]
+};
+/* ============ akhir konfigurasi ============ */
+
+const C = { blue:"#5E9FE8", yellow:"#EAC26B", red:"#E97366", pink:"#DF84A8", green:"#72BC8F" };
+const tint = h => { const n=parseInt(h.slice(1),16); return `rgba(${n>>16&255},${n>>8&255},${n&255},.13)`; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* header + buku */
+document.getElementById("brandName").textContent = CONFIG.namaAlat;
+
+const inst = CONFIG.institusi || {};
+if(inst.universitas) document.getElementById("instUni").textContent = inst.universitas;
+if(inst.departemen) document.getElementById("instDep").textContent = inst.departemen;
+if(inst.prodi) document.getElementById("instProdi").textContent = inst.prodi;
+document.getElementById("footInst").textContent = [inst.departemen, inst.prodi].filter(Boolean).join(" \u00b7 ");
+document.getElementById("footLeft").textContent = CONFIG.namaAlat + " — media pembelajaran praktikum";
+document.getElementById("footRight").textContent = "Disusun oleh " + CONFIG.penyusun;
+/* penampil 3D alat; bila gagal dimuat, otomatis kembali ke video animasi */
+const alat3d = document.getElementById("alat3d");
+if(alat3d){
+  const kartu = document.getElementById("alatKartu");
+  const cap = document.getElementById("alatCap");
+  const ORBIT = "35deg 72deg 92%";
+  let sudahMundur = false;
+
+  const pakaiVideo = () => {
+    if(sudahMundur) return;
+    sudahMundur = true;
+    const bar = document.getElementById("alatBar");
+    if(bar) bar.remove();
+    alat3d.remove();
+    const ua = navigator.userAgent;
+    const safari = /Safari/.test(ua) && !/Chrome|Chromium|Android|CriOS|FxiOS|Edg|OPR/.test(ua);
+    const v = document.createElement("video");
+    v.className = "alat-vid";
+    v.id = "animAlat";
+    v.poster = "assets/animasi-poster.png";
+    v.autoplay = true; v.muted = true; v.loop = true;
+    v.setAttribute("playsinline", "");
+    v.setAttribute("preload", "metadata");
+    if(!safari){
+      const s1 = document.createElement("source");
+      s1.src = "videos/animasi-desain.webm"; s1.type = "video/webm";
+      v.appendChild(s1);
+    } else {
+      kartu.classList.add("putih");
+    }
+    const s2 = document.createElement("source");
+    s2.src = "videos/animasi-desain.mp4"; s2.type = "video/mp4";
+    v.appendChild(s2);
+    v.addEventListener("click", () => { if(v.paused) v.play(); else v.pause(); });
+    kartu.insertBefore(v, cap);
+    const tag = document.getElementById("alatTag");
+    if(tag) tag.innerHTML = '<i class="live"></i>Animasi Desain';
+    cap.innerHTML = "Animasi rancangan Filament Ekstruder \u2014 berputar 360\u00b0";
+    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+      v.removeAttribute("autoplay"); v.pause();
+    }
+  };
+
+  const tombolReset = document.getElementById("reset3d");
+  if(tombolReset) tombolReset.addEventListener("click", () => {
+    alat3d.cameraOrbit = ORBIT;
+    if(typeof alat3d.resetTurntableRotation === "function") alat3d.resetTurntableRotation();
+  });
+  alat3d.addEventListener("error", pakaiVideo);
+  if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    alat3d.removeAttribute("auto-rotate");
+  }
+  /* komponen 3D butuh internet; kalau tak muncul dalam 10 detik, pakai video */
+  setTimeout(() => {
+    if(!window.customElements || !window.customElements.get("model-viewer")) pakaiVideo();
+  }, 10000);
+}
+
+document.getElementById("bookTitle").textContent = CONFIG.bukuPanduan.judul;
+document.getElementById("bookDl").href = CONFIG.bukuPanduan.file;
+
+/* flipbook Heyzine */
+const bp = CONFIG.bukuPanduan;
+const flipFrame = document.getElementById("flipFrame");
+const flipLoading = document.getElementById("flipLoading");
+const flipTab = document.getElementById("flipTab");
+const fsBtn = document.getElementById("fsBtn");
+const flipwrap = document.getElementById("flipwrap");
+const sumber = bp.flipbook || bp.file;
+
+flipTab.href = sumber;
+flipFrame.src = sumber;
+if(!bp.flipbook){
+  document.getElementById("flipLabel").textContent = "Pratinjau PDF — gunakan Layar Penuh agar lebih nyaman dibaca";
+}
+let flipOk = false;
+flipFrame.addEventListener("load", () => { flipOk = true; flipLoading.classList.add("hide"); });
+setTimeout(() => {
+  if(flipOk) return;
+  flipLoading.innerHTML =
+    '<b style="color:#fff;font-size:15px">Flipbook belum bisa dimuat</b>' +
+    '<span style="max-width:340px;line-height:1.55">Periksa koneksi internet Anda, atau buka bukunya langsung lewat tombol di bawah.</span>' +
+    '<a class="btn btn-sm btn-primary" style="margin-top:4px" href="' + sumber + '" target="_blank" rel="noopener">Buka Flipbook</a>';
+}, 8000);
+
+fsBtn.addEventListener("click", () => {
+  if(document.fullscreenElement){ document.exitFullscreen(); }
+  else if(flipwrap.requestFullscreen){ flipwrap.requestFullscreen(); }
+  else { window.open(sumber, "_blank", "noopener"); }
+});
+document.addEventListener("fullscreenchange", () => {
+  fsBtn.lastChild.textContent = document.fullscreenElement ? " Keluar Layar Penuh" : " Layar Penuh";
+});
+document.getElementById("sJob").textContent = CONFIG.labsheets.length;
+document.getElementById("sVid").textContent = CONFIG.videos.length;
+
+/* labsheet — beberapa flipbook dalam satu penampil bertab */
+const lsList = CONFIG.labsheets || [];
+const lsTabs = document.getElementById("lsTabs");
+const lsFrame = document.getElementById("lsFrame");
+const lsLoading = document.getElementById("lsLoading");
+const lsLabel = document.getElementById("lsLabel");
+const lsTabLink = document.getElementById("lsTab");
+const lsWrap = document.getElementById("lsWrap");
+let lsTimer = null;
+
+lsTabs.innerHTML = lsList.map((l, i) => {
+  const c = C[l.warna] || C.blue;
+  return `<button class="ls-tab" type="button" role="tab" data-i="${i}" aria-selected="${i === 0}">
+    <span class="lsnum" style="color:${c};background:${tint(c)};border:1px solid ${c}44">${esc(l.no)}</span>
+    ${esc(l.judul)}
+  </button>`;
+}).join("");
+
+function bukaLabsheet(i){
+  const l = lsList[i];
+  if(!l) return;
+  lsTabs.querySelectorAll(".ls-tab").forEach((b, j) => b.setAttribute("aria-selected", j === i));
+  lsLabel.textContent = l.judul + " — " + l.desc;
+  lsTabLink.href = l.flipbook;
+  lsLoading.className = "flip-loading";
+  lsLoading.innerHTML =
+    '<span class="spinner" aria-hidden="true"></span>' +
+    '<span>Memuat ' + esc(l.judul) + '&hellip;</span>';
+  lsFrame.src = l.flipbook;
+  clearTimeout(lsTimer);
+  lsTimer = setTimeout(() => {
+    lsLoading.innerHTML =
+      '<b style="color:#fff;font-size:15px">Labsheet belum bisa dimuat</b>' +
+      '<span style="max-width:340px;line-height:1.55">Periksa koneksi internet Anda, atau buka labsheet-nya langsung lewat tombol di bawah.</span>' +
+      '<a class="btn btn-sm btn-primary" style="margin-top:4px" href="' + l.flipbook + '" target="_blank" rel="noopener">Buka Labsheet</a>';
+  }, 8000);
+}
+
+lsFrame.addEventListener("load", () => {
+  clearTimeout(lsTimer);
+  lsLoading.classList.add("hide");
+});
+
+lsTabs.addEventListener("click", e => {
+  const b = e.target.closest(".ls-tab");
+  if(b) bukaLabsheet(Number(b.dataset.i));
+});
+
+if(lsList.length) bukaLabsheet(0);
+
+document.getElementById("lsFs").addEventListener("click", () => {
+  if(document.fullscreenElement){ document.exitFullscreen(); }
+  else if(lsWrap.requestFullscreen){ lsWrap.requestFullscreen(); }
+  else { window.open(lsTabLink.href, "_blank", "noopener"); }
+});
+
+/* tombol unduh PDF dihapus bila memang tidak ada berkasnya */
+if(!bp.file){
+  const dl = document.getElementById("bookDl");
+  if(dl) dl.remove();
+}
+
+/* video — satu berkas diputar langsung di halaman, banyak berkas jadi grid + popup */
+const vidsEl = document.getElementById("vids");
+const playIcon = `<span class="play"><svg width="18" height="20" viewBox="0 0 18 20" fill="none" aria-hidden="true"><path d="M17 10 1 19V1l16 9Z" fill="#fff"/></svg></span>`;
+
+function ytId(url){ return (String(url).match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/)||[])[1] || url; }
+
+function mediaHtml(v, autoplay){
+  const a = autoplay ? 1 : 0;
+  if(v.type === "youtube" && v.src)
+    return `<iframe src="https://www.youtube.com/embed/${ytId(v.src)}?autoplay=${a}" title="${esc(v.judul)}" allow="accelerometer;autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>`;
+  if(v.src)
+    return `<video src="${esc(v.src)}" controls ${autoplay ? "autoplay" : ""} playsinline></video>`;
+  return `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,.6);font-size:14px;text-align:center;padding:24px">Video belum ditautkan.</div>`;
+}
+
+if(CONFIG.videos.length === 1){
+  const v = CONFIG.videos[0], c = C[v.warna] || C.blue;
+  vidsEl.classList.add("single");
+  vidsEl.innerHTML = `<div class="vstage">
+    <button class="vscreen" id="vscreen" style="background:radial-gradient(circle at 50% 45%, ${tint(c)}, #0e0e0e 72%)" aria-label="Putar video ${esc(v.judul)}">
+      ${playIcon}${v.durasi ? `<span class="dur">${esc(v.durasi)}</span>` : ""}
+    </button>
+    <div class="vstage-info">
+      <div><h4>${esc(v.judul)}</h4><p>${esc(v.desc)}</p></div>
+      <div class="vstage-meta"><span class="chip">${v.type === "youtube" ? "YouTube" : "Video MP4"}</span>${v.durasi ? `<span class="chip">${esc(v.durasi)}</span>` : ""}</div>
+    </div>
+  </div>`;
+  document.getElementById("vscreen").addEventListener("click", function handler(){
+    this.innerHTML = mediaHtml(v, true);
+    this.style.cursor = "default";
+    this.removeEventListener("click", handler);
+  });
+} else {
+  vidsEl.innerHTML = CONFIG.videos.map((v,i) => {
+    const c = C[v.warna] || C.blue;
+    return `<button class="card" data-i="${i}" aria-label="Putar video ${esc(v.judul)}">
+      <div class="thumb" style="background:radial-gradient(circle at 50% 45%, ${tint(c)}, #101010 72%)">
+        ${playIcon}${v.durasi ? `<span class="dur">${esc(v.durasi)}</span>` : ""}
+      </div>
+      <div class="card-body"><h4>${esc(v.judul)}</h4><p>${esc(v.desc)}</p></div>
+    </button>`;
+  }).join("");
+}
+
+/* modal */
+const modal = document.getElementById("modal"), player = document.getElementById("player");
+let lastFocus = null;
+function openVideo(i){
+  const v = CONFIG.videos[i];
+  lastFocus = document.activeElement;
+  document.getElementById("modalTitle").textContent = v.judul;
+  player.innerHTML = mediaHtml(v, true);
+  modal.classList.add("open");
+  document.body.style.overflow = "hidden";
+  document.getElementById("closeModal").focus();
+}
+function closeVideo(){
+  modal.classList.remove("open"); player.innerHTML = "";
+  document.body.style.overflow = "";
+  if(lastFocus) lastFocus.focus();
+}
+document.getElementById("vids").addEventListener("click", e => {
+  const b = e.target.closest(".card"); if(b) openVideo(+b.dataset.i);
+});
+document.getElementById("closeModal").addEventListener("click", closeVideo);
+modal.addEventListener("click", e => { if(e.target === modal) closeVideo(); });
+document.addEventListener("keydown", e => { if(e.key === "Escape" && modal.classList.contains("open")) closeVideo(); });
+
+/* menu mobile */
+const mb = document.getElementById("menuBtn"), dr = document.getElementById("drawer");
+mb.addEventListener("click", () => {
+  const open = dr.classList.toggle("open");
+  mb.setAttribute("aria-expanded", open);
+});
+dr.addEventListener("click", e => { if(e.target.tagName === "A") { dr.classList.remove("open"); mb.setAttribute("aria-expanded","false"); } });
+</script>
+</body>
+</html>

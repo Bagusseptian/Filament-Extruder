@@ -1,0 +1,5 @@
+Letakkan video demonstrasi di folder ini dengan nama:
+  demonstrasi-alat.mp4
+
+Bila ukurannya besar, unggah ke YouTube lalu ubah CONFIG.videos
+menjadi type:"youtube" dengan src berisi link YouTube-nya.
